@@ -70,6 +70,21 @@ client.on(Events.MessageCreate,message =>{
         return;
     }
 
+    if(message.content == "?tesuryobot vote"){
+        let nowday = new Date().getDay()
+        let text = "⭕ : できる\n🚫 : 22:30から参加\n❌ : できない"
+        if(isOff())text +="\n\n今日はオフ!\n回答の必要はなし\nもし活動したい場合は、⭕の人たちで管理すること。"
+        if(isLeague() && 1<= nowday && nowday <=5)text +="\n\nリーグ出欠確認も忘れずに。" 
+
+        let embed = new EmbedBuilder().setTitle('プロクラブ参加').setColor(0xff4500).setDescription(text)
+        client.channels.cache.get(myChannels.ProClubVoteCh).send({embeds:[embed]});
+        console.log("sent ProClubVoteMessage")
+    }
+
+    if(message.content == "?tesuryobot tracker"){
+        SendTrackerText(myChannels.ProClubVoteCh, myChannels.ProClubVoteCh)
+    }
+
 })
 
 //リアクションが発生したときの挙動
@@ -153,6 +168,7 @@ cron.schedule(config.VoteTime,()=>{
 
     //リーグ期間中かつ今日が土曜日 じゃないなら出欠確認を出す
     if(!(isLeague() && nowday == config.leagueDay)){
+
         let text = "⭕ : できる\n🚫 : 22:30から参加\n❌ : できない"
         if(isOff())text +="\n\n今日はオフ!\n回答の必要はなし\nもし活動したい場合は、⭕の人たちで管理すること。"
         if(isLeague() && 1<= nowday && nowday <=5)text +="\n\nリーグ出欠確認も忘れずに。" 
@@ -182,6 +198,7 @@ cron.schedule(config.UpdateTime,()=>{
 });
 
 //cron:全員回答完了か判定
+//全員回答完了したならばジャッジメッセージ送信
 cron.schedule(config.UpdateTime,async ()=>{
     
     let flag = await BooleanJudgeMessageExist(5); //全員回答したか
@@ -513,59 +530,19 @@ cron.schedule(config.UpdateTime,async ()=>{
     }
 });
 
-
-//ジャッジメッセージがあるか
-async function BooleanJudgeMessageExist(messageNum){
-    let nowday = new Date().getDay()
-    let MsgCollection = await GetTargetMessage(myChannels.ProClubVoteCh, messageNum);
-    for (const m of MsgCollection.values()) {
-        if(m.author.id == tesuryoBotId && m.content.match("全員回答完了") && m.createdAt.getDay() == nowday){
-            return true
-        }
-    }
-    return false
-}
-
-//投票者取得
-async function GetVoteReaciton(messageNum,EmojiList){
-    let nowday = new Date().getDay()
-    let MsgCollection = await GetTargetMessage(myChannels.ProClubVoteCh, messageNum);
-    for (const m of MsgCollection.values()) {
-        if(m.author.id == tesuryoBotId && m.content == "" && m.createdAt.getDay() == nowday){
-            let arr = await GetReactionUserIds(m,EmojiList);
-            return arr
-        }
-    }
-   return false
-}
-
 //cron:回答リマインダー
 cron.schedule(config.reminderTime,async () =>{
     let nowday = new Date().getDay()
 
     //リーグ期間中で今日が土曜日 じゃないなら
     if(!(isLeague() && nowday == config.leagueDay) && !isOff()){
-        let msg;
-        let flag =false;
-        let MsgCollection = await GetTargetMessage(myChannels.ProClubVoteCh, 5);
+        let flag = await BooleanJudgeMessageExist(5)
+        if(!flag){
+            let arr = await GetVoteReaciton(5,["⭕","🚫","❌"])
 
-        for (const m of MsgCollection.values()) {
-            if(m.author.id == tesuryoBotId && m.content == "" && m.createdAt.getDay() == nowday){
-                msg = m
-                flag = true
-                break
-            }
-        }
-        for (const m of MsgCollection.values()) {
-            if(m.author.id == tesuryoBotId && m.content.match("全員回答完了") && m.createdAt.getDay() == nowday){
-                flag = false
-                break
-            }
-        }
-        if(flag){
-            let arr = await GetReactionUserIds(msg,["⭕","🚫","❌"]);
             let ans = [...arr[0],...arr[1],...arr[2]]
             let notAns = MemberList.filter(id => !ans.includes(id))
+
             if(notAns.length>0){
                 let text = "まだの人回答宜しくお願いします！\n"
                 for (let id of notAns){
@@ -581,47 +558,37 @@ cron.schedule(config.reminderTime,async () =>{
 cron.schedule(config.JudgeTime,async ()=>{
     let nowday = new Date().getDay()
     //リーグ期間中で今日が土曜日 じゃないなら
-    if(!(isLeague() && nowday == config.leagueDay)&&!isOff()){
-        //オフじゃないなら
-        let flag =false;
-        let MsgCollection = await GetTargetMessage(myChannels.ProClubVoteCh, 5);
+    //オフじゃないなら
 
-        for (const m of MsgCollection.values()) {
-            if(m.author.id==tesuryoBotId && m.content.match("全員回答完了") && m.createdAt.getDay() == nowday){
-                flag = true
-                break
-            }
-        }
+    if(!(isLeague() && nowday == config.leagueDay)&&!isOff()){
+        
+        let flag = await BooleanJudgeMessageExist(5)
     
         if(!flag){
-            for (const m of MsgCollection.values()) {
-                if(m.author.id == tesuryoBotId && m.content == "" && m.createdAt.getDay() == nowday){
-                    let arr = await GetReactionUserIds(m,["⭕","🚫","❌"]);
-                    let Ans = [...arr[0],...arr[1],...arr[2]]
-                    let notAns = MemberList.filter(id => !Ans.includes(id))
+            let arr = await GetVoteReaciton(5,["⭕","🚫","❌"]);
+            let Ans = [...arr[0],...arr[1],...arr[2]]
+            let notAns = MemberList.filter(id => !Ans.includes(id))
     
-                    let gm = GetGuestManager()
-                    gm = gm.filter(id =>!arr[2].includes(id))
-                    let text =""
+            let gm = GetGuestManager()
+            gm = gm.filter(id =>!arr[2].includes(id))
+            let text =""
 
-                    //未回答者がいてfin
-                    if(notAns.length >0){
-                        //ゲス募管理者がどっちかいるとき
-                        text += "@週担当: "
-                        if(gm.length>0){
-                            for (let id of gm){
-                                text += "<@" + id+ "> "
-                            }
-                            text += "全員回答完了していませんが、一旦判断することをオススメします！"
-                            client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
-                        //いないとき
-                        }else{
-                            text += "<@&1067724158567452692> 全員回答完了していませんが、一旦判断することをオススメします！"
-                            client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
-                        }
+            //未回答者がいてfin
+            if(notAns.length >0){
+                //ゲス募管理者がどっちかいるとき
+                text += "@週担当: "
+                if(gm.length>0){
+                    for (let id of gm){
+                        text += "<@" + id+ "> "
                     }
-                    break
+                    text += "全員回答完了していませんが、一旦判断することをオススメします！"
+                    client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
+                //いないとき
+                }else{
+                    text += "<@&1067724158567452692> 全員回答完了していませんが、一旦判断することをオススメします！"
+                    client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
                 }
+                    
             }
         }
     }
@@ -676,6 +643,8 @@ cron.schedule(config.GuestManagerTime,()=>{
 
 })
 
+//以下、便利関数
+
 //オフの日判定
 function isOff(){
     let now = new Date()
@@ -719,6 +688,31 @@ async function GetReactionUserIds(msg, emojis){
         ResultArray.push(c)
     }
     return ResultArray
+}
+
+//ジャッジメッセージがあるか
+async function BooleanJudgeMessageExist(messageNum){
+    let nowday = new Date().getDay()
+    let MsgCollection = await GetTargetMessage(myChannels.ProClubVoteCh, messageNum);
+    for (const m of MsgCollection.values()) {
+        if(m.author.id == tesuryoBotId && m.content.match("全員回答完了") && m.createdAt.getDay() == nowday){
+            return true
+        }
+    }
+    return false
+}
+
+//投票者取得
+async function GetVoteReaciton(messageNum,EmojiList){
+    let nowday = new Date().getDay()
+    let MsgCollection = await GetTargetMessage(myChannels.ProClubVoteCh, messageNum);
+    for (const m of MsgCollection.values()) {
+        if(m.author.id == tesuryoBotId && m.content == "" && m.createdAt.getDay() == nowday){
+            let arr = await GetReactionUserIds(m,EmojiList);
+            return arr
+        }
+    }
+   return false
 }
 
 //　ゲスト管理者計算
@@ -887,6 +881,7 @@ async function UpdateTrackerText(VoteCh){
     }
 }
 
+//丸め
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);

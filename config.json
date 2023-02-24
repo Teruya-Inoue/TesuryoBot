@@ -1,21 +1,21 @@
 {
     "members":[
-        {"name":"べや",     "id":"922864181424832513","active":true,"keeper":false,"guestmanager":true},
-        {"name":"りんりん", "id":"552090713505005568","active":true,"keeper":false,"guestmanager":true},
-        {"name":"たかおみ", "id":"781896580840030209","active":true,"keeper":false,"guestmanager":true},
-        {"name":"ぽりょり", "id":"715375802040057877","active":true,"keeper":false,"guestmanager":true},
-        {"name":"あゆれ",   "id":"897418253419302913","active":true,"keeper":false,"guestmanager":true},
-        {"name":"きよはる", "id":"914522751971258369","active":true,"keeper":false,"guestmanager":true},
-        {"name":"トクソ",   "id":"534894848508166165","active":true,"keeper":false,"guestmanager":true},
-        {"name":"くわがた", "id":"689401267717668864","active":true,"keeper":false,"guestmanager":true},
-        {"name":"にし",     "id":"719164347410153572","active":true,"keeper":false,"guestmanager":true},
-        {"name":"たいが",   "id":"876112815373557770","active":true,"keeper":false,"guestmanager":true},
-        {"name":"ソノ",     "id":"430749616301015042","active":true,"keeper":true,"guestmanager" :false},
-        {"name":"りゅーと","id":"854694706423136266","active":true,"keeper":false,"guestmanager":false},
-        {"name":"ヤヤ",    "id":"363333838715486208","active":true,"keeper":false,"guestmanager":false}
+        {"name":"べや",     "id":"922864181424832513","active":true,"keeper":false,"guestmanager":true,"pos":["DFライン"]},
+        {"name":"りんりん", "id":"552090713505005568","active":true,"keeper":false,"guestmanager":true,"pos":["前線"]},
+        {"name":"たかおみ", "id":"781896580840030209","active":true,"keeper":false,"guestmanager":true,"pos":["前線"]},
+        {"name":"ぽりょり", "id":"715375802040057877","active":true,"keeper":false,"guestmanager":true,"pos":["前線"]},
+        {"name":"あゆれ",   "id":"897418253419302913","active":true,"keeper":false,"guestmanager":true,"pos":["DFライン","中盤"]},
+        {"name":"きよはる", "id":"914522751971258369","active":true,"keeper":false,"guestmanager":true,"pos":["DFライン"]},
+        {"name":"トクソ",   "id":"534894848508166165","active":true,"keeper":false,"guestmanager":true,"pos":["中盤","前線"]},
+        {"name":"くわがた", "id":"689401267717668864","active":true,"keeper":false,"guestmanager":true,"pos":["DFライン"]},
+        {"name":"にし",     "id":"719164347410153572","active":true,"keeper":false,"guestmanager":true,"pos":["DFライン","前線"]},
+        {"name":"たいが",   "id":"876112815373557770","active":true,"keeper":false,"guestmanager":true,"pos":["中盤"]},
+        {"name":"ソノ",     "id":"430749616301015042","active":true,"keeper":true,"guestmanager" :false,"pos":["GK"]},
+        {"name":"りゅーと","id":"854694706423136266","active":true,"keeper":false,"guestmanager":false,"pos":["中盤"]},
+        {"name":"ヤヤ",    "id":"363333838715486208","active":true,"keeper":false,"guestmanager":false,"pos":["中盤","前線"]}
     ],
     "supportMembers":[
-        {"name":"あきちゃん","id":"919212052789198899"}
+        {"name":"あきちゃん","id":"919212052789198899","pos":["中盤"]}
     ],
     "offDay":[0],
     "offDate":[
