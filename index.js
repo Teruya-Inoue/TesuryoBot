@@ -84,6 +84,9 @@ client.on(Events.MessageCreate,message =>{
     if(message.content == "?tesuryobot tracker"){
         SendTrackerText(myChannels.ProClubVoteCh, myChannels.ProClubVoteCh)
     }
+    if((message.content == "ｿﾆｬﾝ（ﾎﾞｿｯ") && ((message.author.id == "533694965541371905")|(message.author.id == "430749616301015042"))){
+        client.channels.cache.get(message.channelId).send("<:amepura3:1007215569898045542>")
+    }
 
 })
 
