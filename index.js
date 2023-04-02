@@ -16,12 +16,13 @@ let keeperId = "";
 //メンバーリスト
 const MemberList = []//固定
 const SMemberList = []//サポメン
-const GMlist =[]//ゲスト管理
+const GMlist =config.guestmanagers
+
 for (let member of Members){
     if(member.active) MemberList.push(member.id)
-    if(member.guestmanager) GMlist.push(member.id)
     if(member.active && member.keeper) keeperId = member.id
 }
+
 for (let sm of SupportMembers){
     SMemberList.push(sm.id)
 }
@@ -170,7 +171,7 @@ cron.schedule(config.VoteTime,()=>{
     let nowday = new Date().getDay()
 
     //リーグ期間中かつ今日が土曜日 じゃないなら出欠確認を出す
-    if(!(isLeague() && nowday == config.leagueDay)){
+    if(!(isLeague() && isLeagueDay())){
 
         let text = "⭕ : できる\n🚫 : 22:30から参加\n❌ : できない"
         if(isOff())text +="\n\n今日はオフ!\n回答の必要はなし\nもし活動したい場合は、⭕の人たちで管理すること。"
@@ -186,7 +187,7 @@ cron.schedule(config.VoteTime,()=>{
 cron.schedule(config.TrackerTime,()=>{
     let nowday = new Date().getDay()
     //リーグ期間中で今日が土曜日 じゃないなら
-    if(!(isLeague() && nowday == config.leagueDay)){
+    if(!(isLeague() && isLeagueDay())){
         SendTrackerText(myChannels.ProClubVoteCh, myChannels.ProClubVoteCh)
         console.log("sent TrackerMessage")
     }
@@ -194,8 +195,7 @@ cron.schedule(config.TrackerTime,()=>{
 
 //cron:プロクラブ出欠追跡テキスト更新
 cron.schedule(config.UpdateTime,()=>{
-    let nowday = new Date().getDay()
-    if(!(isLeague() && nowday == config.leagueDay)){
+    if(!(isLeague() && isLeagueDay())){
         UpdateTrackerText(myChannels.ProClubVoteCh)
     }
 });
@@ -205,10 +205,10 @@ cron.schedule(config.UpdateTime,()=>{
 cron.schedule(config.UpdateTime,async ()=>{
     
     let flag = await BooleanJudgeMessageExist(5); //全員回答したか
-    let nowday = new Date().getDay() // 曜日
+    
 
     //リーグ期間中で今日が土曜日 じゃない かつ　オフじゃない かつ　ジャッジメッセージがない なら
-    if( !(isLeague() && nowday == config.leagueDay ) && !isOff() && !flag){
+    if( !(isLeague() && isLeagueDay() ) && !isOff() && !flag){
         //リアクションした人取得
         let arr     = await GetVoteReaciton(5,["⭕","🚫","❌"])
         
@@ -535,10 +535,9 @@ cron.schedule(config.UpdateTime,async ()=>{
 
 //cron:回答リマインダー
 cron.schedule(config.reminderTime,async () =>{
-    let nowday = new Date().getDay()
 
     //リーグ期間中で今日が土曜日 じゃないなら
-    if(!(isLeague() && nowday == config.leagueDay) && !isOff()){
+    if(!(isLeague() && isLeagueDay()) && !isOff()){
         let flag = await BooleanJudgeMessageExist(5)
         if(!flag){
             let arr = await GetVoteReaciton(5,["⭕","🚫","❌"])
@@ -563,7 +562,7 @@ cron.schedule(config.JudgeTime,async ()=>{
     //リーグ期間中で今日が土曜日 じゃないなら
     //オフじゃないなら
 
-    if(!(isLeague() && nowday == config.leagueDay)&&!isOff()){
+    if(!(isLeague() && isLeagueDay())&&!isOff()){
         
         let flag = await BooleanJudgeMessageExist(5)
     
@@ -599,40 +598,34 @@ cron.schedule(config.JudgeTime,async ()=>{
 
 //cron:リーグ出欠
 cron.schedule(config.LeagueVoteTime,()=>{
-    if(isLeague()){
-        let text = "⭕ : できる\n🚫 : 遅れて参加\n❌ : できない\n❓ : 未定"
-        let title;
-        switch (config.leagueDay) {
-            case 0:
-                title = "日曜日のリーグ戦に参加"
-                break;
-            case 1:
-                title = "月曜日のリーグ戦に参加"
-                break;
-            case 2:
-                title = "火曜日のリーグ戦に参加"
-                break;
-            case 3:
-                title = "水曜日のリーグ戦に参加"
-                break;
-            case 4:
-                title = "木曜日のリーグ戦に参加"
-                break;
-            case 5:
-                title = "金曜日のリーグ戦に参加"
-                break;
-            case 6:
-                title = "土曜日のリーグ戦に参加"
-                break;
+    let now    = new Date()
 
-            default:
-                title = "公式戦に参加"
-                break;
+    for (let s of config.leagueSchedule){
+        if (new Date(s.start) <= now && now <= new Date(s.end)){
+            let text;
+            let title;
+            
+            switch (s.name) {
+                case "rasleo":
+                    title = "土曜日のリーグ戦(ラスレオ)"
+                    text = "⭕: 参加可\n🚫 : 遅れて参加可\n❌ : 参加できない\n❓ : 未定\n\n"
+                    text += "※試合が23:30からなので、活動は22:30から"
+                    break;
+                case "AVPCL":
+                    title = "金曜日のリーグ戦(AVPCL)"
+                    text = "⭕ : 参加可\n🚫 : 遅れて参加可\n❌ : 参加できないn❓ : 未定\n\n"
+                    text += "※試合が23:00からなので、活動は22:00から"
+                    break;
+                default:
+                    title = "公式戦に参加"
+                    text = "⭕ : できる\n🚫 : 試合から参加できる\n❌ : できない\n❓ : 未定\n\n"
+                    break;
+            }
+            let embed = new EmbedBuilder().setTitle(title).setColor(0x00bfff).setDescription(text)
+            client.channels.cache.get(myChannels.LeagueVoteCh).send({embeds:[embed]});
+            console.log("sent VoteMessage")
         }
-        let embed = new EmbedBuilder().setTitle(title).setColor(0x00bfff).setDescription(text)
-        client.channels.cache.get(myChannels.LeagueVoteCh).send({embeds:[embed]});
-        console.log("sent VoteMessage")
-    }
+    }        
 })
 
 //cron:ゲスト管理
@@ -669,7 +662,7 @@ function isOff(){
 //リーグ期間判定
 function isLeague(){
     let now = new Date()
-    for (let d of config.leagueDate){
+    for (let d of config.leagueSchedule){
         if (new Date(d.start) <= now && now <= new Date(d.end)){
             return true
         }
@@ -677,6 +670,15 @@ function isLeague(){
     return false
 }
 
+function isLeagueDay(){
+    let nowday = new Date().getDay()
+    for (let d of config.leagueSchedule){
+        if (d.leagueDay == nowday){
+            return true
+        }
+    }
+    return false
+}
 // 指定のユーザー、内容、チャンネルから最新n個メッセージをとってくる
 async function GetTargetMessage(channel,n){
     return await client.channels.cache.get(channel).messages.fetch({limit:n})
@@ -720,10 +722,14 @@ async function GetVoteReaciton(messageNum,EmojiList){
 
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2022/08/05");
+    let day1 = new Date("2022/03/31");
     let day2 = new Date();
-    let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % 10 
-    return [GMlist[num],GMlist[num+1]]
+    let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % 9
+    if(num!=8){
+        return [GMlist[num],GMlist[num+1]]
+    }else{
+        return [GMlist[num],GMlist[0]]
+    }
 }
 
 // 実施判定のテキスト取得
@@ -884,7 +890,7 @@ async function UpdateTrackerText(VoteCh){
     }
 }
 
-//丸め
+//数値丸め
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
