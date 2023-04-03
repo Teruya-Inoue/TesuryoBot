@@ -81,6 +81,36 @@ client.on(Events.MessageCreate,message =>{
         client.channels.cache.get(myChannels.ProClubVoteCh).send({embeds:[embed]});
         console.log("sent ProClubVoteMessage")
     }
+    if(message.content == "?tesuryobot leaguevote"){
+        let now    = new Date()
+
+        for (let s of config.leagueSchedule){
+            if (new Date(s.start) <= now && now <= new Date(s.end)){
+                let text;
+                let title;
+                
+                switch (s.name) {
+                    case "rasleo":
+                        title = "土曜日のリーグ戦(ラスレオ)"
+                        text = "⭕: 参加可\n🚫 : 遅れて参加可\n❌ : 参加できない\n❓ : 未定\n\n"
+                        text += "※試合が23:30からなので、活動は22:30から"
+                        break;
+                    case "AVPCL":
+                        title = "金曜日のリーグ戦(AVPCL)"
+                        text = "⭕ : 参加可\n🚫 : 遅れて参加可\n❌ : 参加できないn❓ : 未定\n\n"
+                        text += "※試合が23:00からなので、活動は22:00から"
+                        break;
+                    default:
+                        title = "公式戦に参加"
+                        text = "⭕ : できる\n🚫 : 試合から参加できる\n❌ : できない\n❓ : 未定\n\n"
+                        break;
+                }
+                let embed = new EmbedBuilder().setTitle(title).setColor(0x00bfff).setDescription(text)
+                client.channels.cache.get(myChannels.LeagueVoteCh).send({embeds:[embed]});
+                console.log("sent VoteMessage")
+            }
+        }        
+    }
 
     if(message.content == "?tesuryobot tracker"){
         SendTrackerText(myChannels.ProClubVoteCh, myChannels.ProClubVoteCh)
@@ -251,7 +281,7 @@ cron.schedule(config.UpdateTime,async ()=>{
             judgeNum = fieldNum + notAns.length
         //キーパーが未回答のとき
         }else if(notAns.includes(keeperId)){
-            keeperNum = 0
+            keeperNum = -1
             fieldNum = fieldmemberNum + smemberNum
             judgeNum = fieldNum + notAns.length - 1
         }
@@ -280,7 +310,7 @@ cron.schedule(config.UpdateTime,async ()=>{
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
         //未回答がいるがフル集まった
-        }else if(notAns.length > 0 && fieldmemberNum == 10 && keeperNum == 1){
+        }else if(notAns.length > 0 && fieldmemberNum == 10){
             console.log("full")
             for (let id of [...arr[0],...arr[1],...notAns]){
                 text += "<@" + id+ "> "
@@ -289,21 +319,21 @@ cron.schedule(config.UpdateTime,async ()=>{
 
             //フィールド正規メンバーが10人&&サポメン0人
             if(fieldmemberNum == 10 && delayNum == 0 && smemberNum == 0){
-                text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                text += "フィールド10人集まりました!\n**22:00から活動!**\n"
 
             //フィールド正規メンバーが10人&&サポメン1人以上
             }else if(fieldmemberNum == 10 && delayNum == 0 && smemberNum > 0){
-                text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                text += "フィールド10人集まりました!\n**22:00から活動!**\n"
                 text += "サポメンさんは休みです!"
                 
             //22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン0人
             }else if(fieldmemberNum == 10 && delayNum > 0 && smemberNum == 0){
                 //22:30からが1人だけ
                 if(delayNum == 1){
-                    text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:00から活動!**\n"
                 //22:30からが2人以上
                 }else{
-                    text += "メンバー10人集まりました!\n**22:30から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:30から活動!**\n"
                 }
 
             //22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン1人以上
@@ -311,11 +341,11 @@ cron.schedule(config.UpdateTime,async ()=>{
                 //サポメンが22:30からのメンバー以下
                     //(22:30からのメンバー数)-(サポメン)>1(22:30~活動)
                 if( delayNum - smemberNum > 1 ){
-                    text += "メンバー10人集まりました!\n**22:30から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:30から活動!**\n"
                     text += "サポメンさんは休みです!"
                     //(22:30からのメンバー数)-(サポメン)==1(22:00~活動)
                 }else if((delayNum - smemberNum == 1) | (delayNum - smemberNum == 0)){
-                    text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:00から活動!**\n"
 
                     let a =[]
                     let start = getRandomInt(0,smemberNum)
@@ -333,7 +363,7 @@ cron.schedule(config.UpdateTime,async ()=>{
                     text += "が23時交代です!"
                 //サポメンが22:30からのメンバーより多い
                 }else if (delayNum - smemberNum < 0){
-                    text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:00から活動!**\n"
 
                     let b =[]
                     let start = getRandomInt(0,delayNum)
@@ -353,6 +383,9 @@ cron.schedule(config.UpdateTime,async ()=>{
                     text += "他のサポメンさんはおやすみです"
                 }
             }
+            if(keeperNum==-1){
+                text += "\n(キーパーは未回答)"
+            }
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
         }else if (notAns.length == 0){
@@ -364,21 +397,21 @@ cron.schedule(config.UpdateTime,async ()=>{
 
             //フィールド正規メンバーが10人&&サポメン0人
             if(fieldmemberNum == 10 && delayNum == 0 && smemberNum == 0){
-                text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                text += "フィールド10人集まりました!\n**22:00から活動!**\n"
 
             //フィールド正規メンバーが10人&&サポメン1人以上
             }else if(fieldmemberNum == 10 && delayNum == 0 && smemberNum > 0){
-                text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                text += "フィールド10人集まりました!\n**22:00から活動!**\n"
                 text += "サポメンさんは休みです!"
                 
             //22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン0人
             }else if(fieldmemberNum == 10 && delayNum > 0 && smemberNum == 0){
                 //22:30からが1人だけ
                 if(delayNum == 1){
-                    text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:00から活動!**\n"
                 //22:30からが2人以上
                 }else{
-                    text += "メンバー10人集まりました!\n**22:30から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:30から活動!**\n"
                 }
 
             //22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン1人以上
@@ -386,11 +419,11 @@ cron.schedule(config.UpdateTime,async ()=>{
                 //サポメンが22:30からのメンバー以下
                     //(22:30からのメンバー数)-(サポメン)>1(22:30~活動)
                 if( delayNum - smemberNum > 1 ){
-                    text += "メンバー10人集まりました!\n**22:30から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:30から活動!**\n"
                     text += "サポメンさんは休みです!"
                     //(22:30からのメンバー数)-(サポメン)==1(22:00~活動)
                 }else if((delayNum - smemberNum == 1) | (delayNum - smemberNum == 0)){
-                    text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:00から活動!**\n"
                     let a =[]
                     let start = getRandomInt(0,smemberNum)
                     for (let index = 0; index < smemberNum; index++) {
@@ -407,7 +440,7 @@ cron.schedule(config.UpdateTime,async ()=>{
                     text += "が23時交代です!"
                 //サポメンが22:30からのメンバーより多い
                 }else if (delayNum - smemberNum < 0){
-                    text += "メンバー10人集まりました!\n**22:00から活動!**\n"
+                    text += "フィールド10人集まりました!\n**22:00から活動!**\n"
                     let b =[]
                     let start = getRandomInt(0,delayNum)
                     for (let index = 0; index < delayNum; index++) {
@@ -428,28 +461,28 @@ cron.schedule(config.UpdateTime,async ()=>{
 
             //フィールド正規メンバーが10人未満 && サポメン0人
             }else if(fieldmemberNum < 10 && delayNum == 0 && smemberNum == 0){
-                text += `メンバー${fieldNum}人集まりました!\nゲス募数:${10-fieldNum}\n**22:00から活動!**\n`
+                text += `フィールド${fieldNum}人集まりました!\nゲス募数:${10-fieldNum}\n**22:00から活動!**\n`
 
             //フィールド正規メンバーが10人未満 && サポメン1人以上
             }else if(fieldmemberNum < 10 && delayNum == 0 && smemberNum > 0){
                 //フィールドが10人超える
                 if(fieldNum > 10){
-                    text += `メンバー${fieldNum}人集まりました!\n**22:00から活動!**\n`
+                    text += `フィールド${fieldNum}人集まりました!\n**22:00から活動!**\n`
                     text += "サポメンはが参加してください!"
                 //フィールドが10人以下
                 }else{
-                    text += `メンバー${fieldNum}人集まりました!\n**22:00から活動!**\n`
+                    text += `フィールド${fieldNum}人集まりました!\n**22:00から活動!**\n`
                 }
 
             //22:30からのメンバーも含んでフィールド正規メンバーが10人未満&&サポメン0人
             }else if(fieldmemberNum < 10 && delayNum > 0 && smemberNum == 0){
                 //22:30からが1人だけ
                 if(delayNum == 1){
-                    text += `メンバー${fieldNum}人集まりました!\n**22:00から活動!**\n`
+                    text += `フィールド${fieldNum}人集まりました!\n**22:00から活動!**\n`
                 //22:30からが2人以上
                 }else{
 
-                    text += `メンバー${fieldNum}人集まりました!\n**22:30から活動!**\n`
+                    text += `フィールド${fieldNum}人集まりました!\n**22:30から活動!**\n`
                 }
 
             //22:30からのメンバーも含んでフィールド正規メンバーが10人未満&&サポメン1人以上
@@ -459,10 +492,10 @@ cron.schedule(config.UpdateTime,async ()=>{
                     //サポメンが22:30からのメンバー以下
                     //(22:30からのメンバー数)-(サポメン)>1(22:30~活動)
                     if( delayNum - smemberNum > 1 ){
-                        text += `メンバー${fieldNum}人集まりました!\n**22:30から活動!**\n`
+                        text += `フィールド${fieldNum}人集まりました!\n**22:30から活動!**\n`
                     //(22:30からのメンバー数)-(サポメン)が1or0(22:00~活動)
                     }else if(delayNum - smemberNum == 1){
-                        text += `メンバー${fieldNum}人集まりました!\n**22:00から活動!**\n`
+                        text += `フィールド${fieldNum}人集まりました!\n**22:00から活動!**\n`
                         let a =[]
                         let start = getRandomInt(0,smemberNum)
                         for (let index = 0; index < smemberNum; index++) {
@@ -479,7 +512,7 @@ cron.schedule(config.UpdateTime,async ()=>{
                         text += "が23時交代です!"
                     //サポメンが22:30からのメンバーより多い
                     }else if (delayNum - smemberNum < 0){
-                        text += `メンバー${fieldNum}人集まりました!\n**22:00から活動!**\n`
+                        text += `フィールド${fieldNum}人集まりました!\n**22:00から活動!**\n`
                         let b =[]
                         let start = getRandomInt(0,delayNum)
                         for (let index = 0; index < delayNum; index++) {
@@ -501,10 +534,10 @@ cron.schedule(config.UpdateTime,async ()=>{
                 }else{
                     //22:30からが1人だけ
                     if(delayNum == 1){
-                        text += `メンバー${fieldNum}人集まりました!\nゲス募数:${10-fieldNum}\n**22:00から活動!**\n`
+                        text += `フィールド${fieldNum}人集まりました!\nゲス募数:${10-fieldNum}\n**22:00から活動!**\n`
                     //22:30からが2人以上
                     }else{
-                        text += `メンバー${fieldNum}人集まりました!\nゲス募数:${10-fieldNum}\n**22:30から活動!**\n`
+                        text += `フィールド${fieldNum}人集まりました!\nゲス募数:${10-fieldNum}\n**22:30から活動!**\n`
                     }
                 }
 
@@ -722,10 +755,10 @@ async function GetVoteReaciton(messageNum,EmojiList){
 
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2022/03/31");
+    let day1 = new Date("2023/03/31");
     let day2 = new Date();
     let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % 9
-    if(num!=8){
+    if(num != 8){
         return [GMlist[num],GMlist[num+1]]
     }else{
         return [GMlist[num],GMlist[0]]
