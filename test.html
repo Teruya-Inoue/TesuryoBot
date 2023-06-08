@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>要素の移動</title>
+  <style>
+    #x, #y {
+      width: 200px;
+      height: 400px;
+      border: 1px solid #000;
+      float: left;
+      margin: 10px;
+      padding: 10px;
+    }
+    .element {
+      width: 80px;
+      height: 40px;
+      background-color: #ccc;
+      border: 1px solid #000;
+      margin: 5px;
+      padding: 5px;
+      cursor: move;
+    }
+  </style>
+</head>
+<body>
+  <div id="x">
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 1</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 2</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 3</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 4</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 5</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 6</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 7</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 8</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 9</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 10</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 11</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 12</div>
+    <div class="element" draggable="true" ondragstart="drag(event)">Element 13</div>
+  </div>
+  
+  <div id="y"></div>
+
+  <script>
+    // ドラッグされた要素のIDを格納する変数
+    var draggedElementId = "";
+
+    // ドラッグ開始時に呼ばれる関数
+    function drag(event) {
+      // ドラッグされた要素のIDを保存
+      draggedElementId = event.target.id;
+    }
+
+    // ドロップ時に呼ばれる関数
+    function drop(event) {
+      event.preventDefault();
+      // ドラッグされた要素のIDを取得
+      var elementId = draggedElementId;
+      // ドラッグされた要素を取得
+      var element = document.getElementById(elementId);
+      // ドロップ先の要素を取得
+      var dropZone = event.target;
+      
+      // ドラッグされた要素をドロップ先に追加
+      dropZone.appendChild(element);
+    }
+
+    // ドロップ領域に要素をドロップできるようにする
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    // 初期化処理
+    function init() {
+      // ドロップ領域(y)にドロップを許可するイベントリスナーを追加
+      document.getElementById("y").addEventListener("drop", drop);
+      document.getElementById("y").addEventListener("dragover", allowDrop);
+    }
+
+    // 初期化処理を実行
+    init();
+  </script>
+</body>
+</html>
