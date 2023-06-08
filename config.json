@@ -43,5 +43,5 @@
     "reminderTime"   :"0 18 * * *",
     "JudgeTime":"0 20 * * *",
     "LeagueVoteTime" :"0 6 * * Mon",
-    "GuestManagerTime" :"58 5 * * Fri"
+    "GuestManagerTime" :"58 5 * * Mon"
 }
