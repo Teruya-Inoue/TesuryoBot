@@ -514,7 +514,7 @@ cron.schedule(config.JudgeTime,async ()=>{
             let text =""
 
             
-            if(fieldNum>config.minPlayer){
+            if(fieldNum>=config.minPlayer){
                 text += `全員回答完了していませんが、フィールド${fieldNum}人集まってるので活動ありです！\n`
                 if(delayNum >0){
                     text += "**22:30から活動!**\n"
@@ -694,14 +694,11 @@ async function GetVoteReaciton(messageNum,EmojiList){
 
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2023/03/31");
+    let day1 = new Date("2023/06/11");
     let day2 = new Date();
     let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % GMlist.length
-    if(num != 8){
-        return [GMlist[num],GMlist[num+1]]
-    }else{
-        return [GMlist[num],GMlist[0]]
-    }
+    
+    return [GMlist[num],GMlist[num+1]]
 }
 
 // 実施判定のテキスト取得
