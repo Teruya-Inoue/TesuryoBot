@@ -515,6 +515,10 @@ cron.schedule(config.JudgeTime,async ()=>{
 
             
             if(fieldNum>=config.minPlayer){
+                for (let id of [...arr[0],...arr[1]]){
+                    text += "<@" + id+ "> "
+                }
+                text += "@⭕の人たち"
                 text += `全員回答完了していませんが、フィールド${fieldNum}人集まってるので活動ありです！\n`
                 if(delayNum >0){
                     text += "**22:30から活動!**\n"
