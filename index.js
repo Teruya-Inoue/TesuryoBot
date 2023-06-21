@@ -1,6 +1,7 @@
 // Require 
 const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials} = require('discord.js');
 const http = require('http');
+const fs = require("fs");
 const querystring = require('querystring');
 const cron = require('node-cron');
 const config = require("./config.json");
@@ -151,6 +152,15 @@ client.on(Events.MessageReactionAdd,async (reaction,user)=>{
   
 })
 
+function readFile(file, response) {
+    fs.readFile(`./${file}`, (errors, data) => {
+        if (errors) {
+            console.log("Error reading the file...");
+        }
+        response.end(data);
+    });
+}
+
 //httpサーバー立ち上げ
 http.createServer(function(req, res){
     if (req.method == 'POST'){
@@ -177,6 +187,29 @@ http.createServer(function(req, res){
     }else if (req.method == 'GET'){
         res.writeHead(200, {'Content-Type': 'text/plain'});
         res.end('Discord Bot is active now\n');
+    }
+
+    if (request.url === "/" && request.method === "GET") {
+        response.writeHead(200, {
+            "Content-Type": "text/html"
+        });
+        readFile("view/index.html", response);
+    } else if (request.url === "/public/image/nodejs.png" && request.method === "GET") {
+        response.writeHead(200, {
+            "Content-Type": "image/png"
+        });
+        readFile("public/image/nodejs.png", response);
+    } else if (request.url === "/public/css/style.css" && request.method === "GET") {
+        response.writeHead(200, {
+            "Content-Type": "text/css"
+        });
+        readFile("public/css/style.css", response);
+    } else {
+        response.writeHead(404, {
+            "Content-Type": "text/html"
+        });
+        response.end(`Not found : ${request.url}`);
+        console.log();
     }
 }).listen(3000);
 
@@ -527,7 +560,7 @@ cron.schedule(config.JudgeTime,async ()=>{
                 for (let id of notAns){
                     text+= ` <@${id}> `
                 }
-                text +=`の中から${config.minPlayer - fieldNum}人⭕なら活動アリです！\n`
+                text +=`の中から${config.minPlayer - fieldNum}人⭕なら活動アリです！\n回答したら何か連絡ください。\n`
                 if(delayNum >0){
                     text += "活動ありなら今のところ**22:30から活動予定**\n"
                 }else{
