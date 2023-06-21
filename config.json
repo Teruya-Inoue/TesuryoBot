@@ -10,7 +10,7 @@
         {"name":"くわがた", "id":"689401267717668864","active":true,"keeper":false},
         {"name":"にし",     "id":"719164347410153572","active":true,"keeper":false},
         {"name":"たいが",   "id":"876112815373557770","active":true,"keeper":false},
-        {"name":"ソノ",     "id":"430749616301015042","active":true,"keeper":true},
+        {"name":"ソノ",     "id":"430749616301015042","active":false,"keeper":true},
         {"name":"りゅーと", "id":"854694706423136266","active":true,"keeper":false},
         {"name":"ヤヤ",     "id":"363333838715486208","active":true,"keeper":false}
     ],

@@ -86,35 +86,18 @@ client.on(Events.MessageCreate,message =>{
         console.log("sent ProClubVoteMessage")
     }
     
-    if(message.content == "?tesuryobot leaguevote"){
+    if(message.content.indexOf("?tesuryobot leaguevote")!=-1){
+        console.log("vote")
         let now    = new Date()
-
-        for (let s of config.leagueSchedule){
-            if (new Date(s.start) <= now && now <= new Date(s.end)){
-                let text;
-                let title;
-                
-                switch (s.name) {
-                    case "rasleo":
-                        title = "土曜日のリーグ戦(ラスレオ)"
-                        text = "⭕: 参加可\n🚫 : 遅れて参加可\n❌ : 参加できない\n❓ : 未定\n\n"
-                        text += "※試合が23:30からなので、活動は22:30から"
-                        break;
-                    case "AVPCL":
-                        title = "金曜日のリーグ戦(AVPCL)"
-                        text = "⭕ : 参加可\n🚫 : 遅れて参加可\n❌ : 参加できないn❓ : 未定\n\n"
-                        text += "※試合が23:00からなので、活動は22:00から"
-                        break;
-                    default:
-                        title = "公式戦に参加"
-                        text = "⭕ : できる\n🚫 : 試合から参加できる\n❌ : できない\n❓ : 未定\n\n"
-                        break;
-                }
-                let embed = new EmbedBuilder().setTitle(title).setColor(0x00bfff).setDescription(text)
-                client.channels.cache.get(myChannels.LeagueVoteCh).send({embeds:[embed]});
-                console.log("sent VoteMessage")
-            }
-        }        
+        let dp = message.content.split(" ").slice(-1)[0]
+        let title = dp + "に参加"
+        let text = "⭕ : できる\n🚫 : 試合から参加できる\n❌ : できない\n❓ : 未定\n\n"
+                        
+        let embed = new EmbedBuilder().setTitle(title).setColor(0x00bfff).setDescription(text)
+        client.channels.cache.get(myChannels.LeagueVoteCh).send({embeds:[embed]});
+        console.log("sent VoteMessage")
+            
+         
     }
 
     if(message.content == "?tesuryobot tracker"){
@@ -481,9 +464,9 @@ cron.schedule(config.JudgeTime,async ()=>{
             let fieldmemberNum = maru.length //フィールド正規メンバーの人数
             let smemberNum = smaru.length //サポメンの人数
             let delayNum = arr[1].length
-            let keeperNum //キーパーの数
-            let fieldNum //フィールドの数
-            let judgeNum //活動かfinか判定用の変数
+            let keeperNum= 0 //キーパーの数
+            let fieldNum = fieldmemberNum + smemberNum//フィールドの数
+            let judgeNum = fieldNum + notAns.length//活動かfinか判定用の変数
 
             //キーパーが⭕のとき(22:00-から)
             if(arr[0].includes(keeperId) | smaru.includes(keeperId)){
