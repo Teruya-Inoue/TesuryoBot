@@ -1,0 +1,180 @@
+/* headerの背景色を#f7f2b4、高さを90pxにしてください */
+.header{
+    background-color:crimson;
+    height:90px;
+  }
+.header-list li
+{
+    float: left;
+    padding: 33px 20px;
+    color:white;
+    list-style-type:none;
+}
+.header-list a{
+    text-decoration: none;
+    color: white;
+}
+.header-logo a{
+    text-decoration: none;
+    color: white;
+}
+.header-logo{
+    float: left;
+    font-size: 36px;
+    padding: 20px 40px;
+    color: white;
+}
+
+.header-logo img{
+    height: 50px;
+    padding: 20px 40px;
+    
+}
+.footer {
+    /* background-colorを#2f5167に変更してください */
+    background-color: #2f5167;
+    
+    /* colorを#fffにしてください */
+    color:#fff;
+    
+    /* heightを120pxに変更してください */
+    height: 120px;
+    /* 上下左右のpaddingを40pxにしてください */
+    padding:40px;
+}
+
+.footer-logo{
+    font-size: 32px;
+    float: left;  
+}
+
+.footer-list {
+    float: right;
+}
+
+.footer-list li{
+    padding-bottom: 20px;
+
+}  
+
+.main{
+    background-color:white;
+    
+}
+
+.contents{
+    padding: 20px 40px;
+}
+
+.parent-contents {
+    border: 2px solid #DFA612;
+    color: black;
+    display: flex;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.left-contents{
+    flex-basis: 30%;
+    background-color: #ffffff;
+    
+}
+
+.right-contents{
+    flex-basis: 70%;
+    background-image: url("../img/field.jpg");
+    background-size: cover;
+}
+
+.members {
+    display: flex;
+    flex-wrap:wrap;
+}
+
+.player {
+    width: 100px;
+    height: auto;
+    font-weight: normal;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.player img{
+    max-width: 100%;
+    width: auto;
+}
+
+.formation{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-gap: 10px;
+    margin: 50px;
+}
+
+.pos{
+    height: 0;
+    padding-bottom: 100%;
+    position: relative;
+    border: dotted;
+    
+}
+
+.pos span{
+    position: absolute;
+    color: white;
+    z-index: 2;
+}
+
+.pos img{
+    position: absolute;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    z-index: 1;
+}
+
+#LS{
+    grid-row: 1;
+    grid-column: 2;
+}
+#RS{
+    grid-row: 1;
+    grid-column: 4;
+}
+#CAM{
+    grid-row: 2;
+    grid-column: 3;
+}
+#LCM{
+    grid-row: 3;
+    grid-column: 2;
+}
+#RCM{
+    grid-row: 3;
+    grid-column: 4;
+}
+#CDM{
+    grid-row: 4;
+    grid-column: 3;
+}
+#LB{
+    grid-row: 5;
+    grid-column: 1;
+}
+#LCB{
+    grid-row: 5;
+    grid-column: 2;
+}
+#RCB{
+    grid-row: 5;
+    grid-column: 4;
+}
+#RB{
+    grid-row: 5;
+    grid-column: 5;
+}
+#GK{
+    grid-row: 6;
+    grid-column: 3;
+}

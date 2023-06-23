@@ -1,0 +1,77 @@
+/* headerの背景色を#f7f2b4、高さを90pxにしてください */
+.header{
+    background-color:crimson;
+    height:90px;
+  }
+.header-list li
+{
+    float: left;
+    padding: 33px 20px;
+    color:white;
+    list-style-type:none;
+}
+.header-list a{
+    text-decoration: none;
+    color: white;
+}
+.header-logo a{
+    text-decoration: none;
+    color: white;
+}
+  
+  /* mainの背景色を#bdf7f1、高さを600pxにしてください */
+.main{
+    background-color:white;
+    
+}
+
+.contents{
+    padding: 20px 40px;
+}
+
+.contents img{
+    width: 400px;
+}
+  
+  /* footerの背景色を#ceccf3、高さを270pxにしてください */
+  
+  .footer {
+    /* background-colorを#2f5167に変更してください */
+    background-color: #2f5167;
+    
+    /* colorを#fffにしてください */
+    color:#fff;
+    
+    /* heightを120pxに変更してください */
+    height: 120px;
+    /* 上下左右のpaddingを40pxにしてください */
+    padding:40px;
+  }
+
+
+.header-logo{
+    float: left;
+    font-size: 36px;
+    padding: 20px 40px;
+    color: white;
+}
+
+.header-logo img{
+    height: 50px;
+    padding: 20px 40px;
+    
+}
+
+.footer-logo{
+    font-size: 32px;
+    float: left;  
+}
+
+.footer-list {
+    float: right;
+}
+
+.footer-list li{
+    padding-bottom: 20px;
+
+}
