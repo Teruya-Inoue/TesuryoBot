@@ -1,7 +1,6 @@
 // Require 
 const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials} = require('discord.js');
 const http = require('http');
-const querystring = require('querystring');
 const cron = require('node-cron');
 const config = require("./config.json");
 
@@ -102,7 +101,7 @@ http.createServer(function(req, res){
     if (req.method == 'POST'){
         let data = "";
         req.on('data', function(chunk){
-        data += chunk;
+            data += chunk;
         });
         req.on('end', function(){
             if(!data){
@@ -110,13 +109,7 @@ http.createServer(function(req, res){
                 res.end();
                 return;
             }
-            let dataObject = querystring.parse(data);
             console.log("post:" + dataObject.type);
-            if(dataObject.type == "wake"){
-                console.log("Woke up in post");
-                res.end();
-                return;
-            }
             res.end();
         });
 
@@ -634,4 +627,4 @@ async function UpdateTrackerText(VoteCh){
     }
 }
 
-//client.login(token);
+client.login(process.env.DISCORD_BOT_TOKEN);
