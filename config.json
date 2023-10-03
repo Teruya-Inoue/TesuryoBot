@@ -1,48 +1,123 @@
 {
-    "members":[
-        {"name":"べや",     "id":"922864181424832513","active":true,"keeper":false},
-        {"name":"りんりん", "id":"552090713505005568","active":true,"keeper":false},
-        {"name":"たかおみ", "id":"781896580840030209","active":true,"keeper":false},
-        {"name":"ぽりょり", "id":"715375802040057877","active":true,"keeper":false},
-        {"name":"あゆれ",   "id":"897418253419302913","active":true,"keeper":false},
-        {"name":"きよはる", "id":"914522751971258369","active":true,"keeper":false},
-        {"name":"トクソ",   "id":"534894848508166165","active":true,"keeper":false},
-        {"name":"くわがた", "id":"689401267717668864","active":true,"keeper":false},
-        {"name":"にし",     "id":"719164347410153572","active":true,"keeper":false},
-        {"name":"たいが",   "id":"876112815373557770","active":true,"keeper":false},
-        {"name":"ソノ",     "id":"430749616301015042","active":false,"keeper":true},
-        {"name":"りゅーと", "id":"854694706423136266","active":true,"keeper":false},
-        {"name":"ヤヤ",     "id":"363333838715486208","active":true,"keeper":false}
-    ],
-
-    "supportMembers":[],
-
-    "guestmanagers":[
-        "552090713505005568",
-        "781896580840030209",
-        "897418253419302913",
-        "914522751971258369",
-        "922864181424832513",
-        "534894848508166165",
-        "689401267717668864",
-        "876112815373557770",
-        "715375802040057877",
-        "719164347410153572"
-    ],
     "minPlayer":8,
     "offDay":[0,6],
     "offDate":[
         {"start":"-01-01T00:00:00+0900","end":"-01-03T23:59:59+0900"},
         {"start":"-12-28T00:00:00+0900","end":"-12-31T23:59:59+0900"}
     ],
-    "leagueSchedule":[
-        {"name":"rasleo","leagueDay":6,"start":"2023-02-19T00:00:00+0900","end":"2023-05-20T23:59:59+0900"}
-    ],
+
     "VoteTime"    :"59 5 * * *",
     "TrackerTime" :"20 59 5 * * *",
     "UpdateTime"  :"0,10,20,30,40,50 * 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * *",
+    "confirmTime"  :"5,15,25,35,45,55 * 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * *",
     "reminderTime"   :"0 18 * * *",
     "JudgeTime":"0 20 * * *",
-    "LeagueVoteTime" :"0 6 * * Mon",
-    "GuestManagerTime" :"58 5 * * Mon"
+    "GuestManagerTime" :"58 5 * * Mon",
+    "WeekVoteResetTime":"0 6 * * Sat",
+    
+    "members":[
+        {
+            "name":"あゆれ",   
+            "id":"897418253419302913",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+
+        {
+            "name":"ソノ",     
+            "id":"430749616301015042",
+            "active":true,
+            "keeper":true,
+            "guestmanager":true
+        },
+
+        {   
+            "name":"くわがた", 
+            "id":"689401267717668864",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+
+        {
+            "name":"ぽりょり",
+            "id":"715375802040057877",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+
+        {
+            "name":"にし",
+            "id":"719164347410153572",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+
+        {
+            "name":"たいが",   
+            "id":"876112815373557770",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+        
+        {
+            "name":"りんりん", 
+            "id":"552090713505005568",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+
+        {
+            "name":"たかおみ",
+            "id":"781896580840030209",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+
+        {   
+            "name":"べや",
+            "id":"922864181424832513",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+        
+        {
+            "name":"トクソ",   
+            "id":"534894848508166165",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        },
+        
+        {
+            "name":"ヤヤ",     
+            "id":"363333838715486208",
+            "active":true,
+            "keeper":false,
+            "guestmanager":false
+        },
+        
+        {
+            "name":"りゅーと", 
+            "id":"854694706423136266",
+            "active":true,
+            "keeper":false,
+            "guestmanager":false
+        },
+        
+        {
+            "name":"セイ",     
+            "id":"1102801643080253450",
+            "active":true,
+            "keeper":false,
+            "guestmanager":true
+        }
+    ]
 }
