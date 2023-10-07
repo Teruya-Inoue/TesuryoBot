@@ -3,9 +3,10 @@ const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials} = require('dis
 const http = require('http');
 const cron = require('node-cron');
 const config = require("./config.json");
+const memberJson = require("./member.json")
 
 //わかりやすく
-const Members = config.members
+const Members = memberJson.members
 //手数料botのdiscordユーザーID
 const botID = "991590117036806234";
 
@@ -56,6 +57,31 @@ client.on(Events.MessageCreate,async (message) =>{
         message.react("❌");
         console.log("react to attendance voting by all choices of emoji")
         return;
+    }
+
+    if(message.content.includes("?tesuryobot matchday")){
+        let Operation = message.content.split(" ")
+        let day = Operation[2]
+        let dsp = Operation[3]
+        if(day.length !=1){
+            return
+        }
+
+        let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:6});
+        for (const m of MsgCollection.values()){
+            if(m.embeds[0].title == day){
+                const exampleEmbed = new EmbedBuilder()
+                .setTitle(day)
+                .setDescription(dsp)
+                .setColor(m.embeds[0].color)
+                m.edit({embeds:[exampleEmbed]})
+                await m.reactions.removeAll();
+                await m.react("⭕")
+                await m.react("🚫")
+                await m.react("❌")
+                await m.react("❓")
+            }
+        }
     }
 })
 
@@ -123,14 +149,31 @@ http.createServer(function(req, res){
 //cron:プロクラブ出欠確認に投票投稿
 cron.schedule(config.VoteTime,()=>{
     //今日がオフじゃないなら出欠確認を出す
+    let embed;
+
     if(isOff()){
-        let text = "今日はオフ！出欠がわかる日は<#1138445755619758150>へ"
-        client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
+        let title = "今日はオフ"
+        let description = 
+        `あらかじめ出欠がわかる日は<#${myChannels.WeekVoteCh}>へ。
+        付けたリアクションが<#${myChannels.ProClubVoteCh}>へ事前に反映されます。`
+
+        embed = new EmbedBuilder()
+        .setTitle(title)
+        .setDescription(description)
+        .setColor(0xff4500)
     }else{
-        let text = "⭕ : できる\n❌ : できない"
-        let embed = new EmbedBuilder().setTitle('プロクラブ参加').setColor(0xff4500).setDescription(text)
-        client.channels.cache.get(myChannels.ProClubVoteCh).send({embeds:[embed]});
+        let title = "プロクラブ参加"
+        let description = 
+        `⭕ : できる
+        ❌ : できない
+        活動は22:30~`
+
+        embed = new EmbedBuilder()
+        .setTitle(title)
+        .setDescription(description)
+        .setColor(0xff4500)
     }
+    client.channels.cache.get(myChannels.ProClubVoteCh).send({embeds:[embed]});
     console.log("sent ProClubVoteMessage")
 });
 
@@ -378,11 +421,19 @@ cron.schedule(config.GuestManagerTime,()=>{
 
 //cron:週出欠リアクションリセット
 cron.schedule(config.WeekVoteResetTime,async ()=>{
-    let emojis = ["⭕","❌"]
     let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
     for (const m of MsgCollection.values()){
         await m.reactions.removeAll();
-        for (let i=0 ; i<emojis.length;i++) await m.react(emojis[i])
+        for (let emoji of config.emojisForVoteReaction) await m.react(emoji)
+        try {
+            let defaultEmbed = new EmbedBuilder()
+            .setTitle(m.embeds[0].title)
+            .setDescription(null)
+            .setColor(m.embeds[0].color)
+            m.edit({embeds:[defaultEmbed]})
+        } catch (error) {
+            console.log(error)
+        }
     }
 })
 
@@ -423,40 +474,32 @@ async function BooleanJudgeMessageExist(messageNum){
     return false
 }
 
-//その日の当日出欠と週出欠の合算のリアクション取得
-async function GetAllTodayVoteReaction(){
-    let nowday = new Date().getDay()
-    let days = ["日","月","火","水","木","金","土"]
-
-    let TodayVoteReaction;
-    let WeekVoteReaction;
+async function GetAllTodayVoteReaction(targetDay = new Date().getDay()){
+    let TodayVoteReaction = [];
+    //let WeekVoteReaction;
     
-    await Promise.all([GetTodayVoteReaction(),GetWeekVoteReaction(days[nowday])])
+    await Promise.all([GetTodayVoteReaction(targetDay = targetDay),GetWeekVoteReaction(targetDay = targetDay)])
     .then(values =>{
-        TodayVoteReaction = values[0]
-        WeekVoteReaction = values[1]
-    })
-    
-    for(let i = 0; i < 2; i++){
-        for(let j = 0; j < WeekVoteReaction[i].length;j++ ){
-            let id = WeekVoteReaction[i][j]
-            if(!TodayVoteReaction[0].includes(id) && !TodayVoteReaction[1].includes(id)){
-                TodayVoteReaction[i].push(id)
-            }
+        for(let i = 0 ; i< config.emojisForVoteReaction.length;i++){
+            let mergedArray = [...new Set([...values[0][i],...values[1][i]])]
+            TodayVoteReaction.push(mergedArray)
         }
-    }
-
+    })
     return TodayVoteReaction
 }
 
 //当日出欠のリアクション取得
-async function GetTodayVoteReaction(channel = myChannels.ProClubVoteCh, emojis = ["⭕","❌"]){
-    let nowday = new Date().getDay();
+async function GetTodayVoteReaction(
+    targetDay = new Date().getDay(), 
+    channel = myChannels.ProClubVoteCh, 
+    emojis = config.emojisForVoteReaction)
+    {
+
     let TodayVoteArray = []
-    let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:5});
+    let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:25});
 
     for (const m of MsgCollection.values()) {
-        if(m.author.id == botID && m.content == ""){
+        if(m.author.id == botID && m.content == "" && m.createdAt.getDay() == targetDay){
             for (const emoji of emojis){
                 TodayVoteArray.push(m.reactions.cache.get(emoji).users.fetch()
                 .then(data => {
@@ -471,10 +514,17 @@ async function GetTodayVoteReaction(channel = myChannels.ProClubVoteCh, emojis =
 }
 
 //週出欠のリアクション取得
-async function GetWeekVoteReaction(titleName,channel=myChannels.WeekVoteCh,emojis = ["⭕","❌"]){
-    let weekVoteArray = []
+async function GetWeekVoteReaction(
+    targetDay = new Date().getDay(),
+    channel=myChannels.WeekVoteCh,
+    emojis = config.emojisForVoteReaction)
+    {
 
+    let weekVoteArray = []
+    let days = ["日","月","火","水","木","金","土"]
+    let titleName = days[targetDay]
     let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:5});
+
     for (const m of MsgCollection.values()) {
         if(m.author.id == botID && m.embeds[0].title == titleName){
             for (const emoji of emojis){
@@ -488,6 +538,34 @@ async function GetWeekVoteReaction(titleName,channel=myChannels.WeekVoteCh,emoji
         }
     }
     return Promise.all(weekVoteArray)
+}
+
+async function GetSchedule(){
+    let schedule = {
+        "897418253419302913":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"ayure"},
+        "689401267717668864":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"kuwagata"},
+        "715375802040057877":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"poryori"},
+        "719164347410153572":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"nishi"},
+        "876112815373557770":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"taiga"},
+        "552090713505005568":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"rinlin"},
+        "781896580840030209":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"taka"},
+        "922864181424832513":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"beya"},
+        "534894848508166165":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"tokuso"},
+        "363333838715486208":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"yaya"},
+        "854694706423136266":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"ryuto"},
+        "1102801643080253450":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"sei"}
+    }
+
+    let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+    for(let i = 0;i<7;i++){
+        if(!config.offDay.includes(i)){
+            let voteReactionForEachReactionAtDayList = await GetAllTodayVoteReaction(targetDay = i)
+            for (const id of voteReactionForEachReactionAtDayList[0]){
+                schedule[id][days[i]] = 1
+            }
+        }
+    }
+    return schedule
 }
 
 //　ゲスト管理者計算

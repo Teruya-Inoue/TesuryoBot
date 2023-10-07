@@ -104,5 +104,6 @@ dist
 .tern-port
 
 package-lock.json
-token.txt
+bottest.js
 test.js
+member.json
