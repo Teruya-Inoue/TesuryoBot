@@ -2,8 +2,10 @@
 const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials} = require('discord.js');
 const http = require('http');
 const cron = require('node-cron');
+const request = require('request')
 const config = require("./config.json");
 const memberJson = require("./member.json")
+let scheduleJson = require("./scheduleConfig.json")
 
 //わかりやすく
 const Members = memberJson.members
@@ -539,26 +541,18 @@ async function GetWeekVoteReaction(
     return Promise.all(weekVoteArray)
 }
 
-async function GetSchedule(){
-    let schedule = {
-        "897418253419302913":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"ayure"},
-        "689401267717668864":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"kuwagata"},
-        "715375802040057877":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"poryori"},
-        "719164347410153572":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"nishi"},
-        "876112815373557770":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"taiga"},
-        "552090713505005568":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"rinlin"},
-        "781896580840030209":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"taka"},
-        "922864181424832513":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"beya"},
-        "534894848508166165":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"tokuso"},
-        "363333838715486208":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"yaya"},
-        "854694706423136266":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"ryuto"},
-        "1102801643080253450":{"Mon":0,"Tue":0,"Wed":0,"Thu":0,"Fri":0,"name":"sei"}
-    }
-
+async function GetSchedule(schedule){
+    let nowday = new Date().getDay()
     let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
     for(let i = 0;i<7;i++){
         if(!config.offDay.includes(i)){
-            let voteReactionForEachReactionAtDayList = await GetAllTodayVoteReaction(targetDay = i)
+            let voteReactionForEachReactionAtDayList;
+            if(i<=nowday){
+                voteReactionForEachReactionAtDayList = await GetAllTodayVoteReaction(targetDay = i)
+            }else if(nowday<i){
+                voteReactionForEachReactionAtDayList = await GetWeekVoteReaction(targetDay=i)
+            }
+            
             for (const id of voteReactionForEachReactionAtDayList[0]){
                 schedule[id][days[i]] = 1
             }
@@ -567,9 +561,81 @@ async function GetSchedule(){
     return schedule
 }
 
+//ポジション取得
+async function getPosition(){
+    scheduleJson.schedule = await GetSchedule(scheduleJson.schedule)
+
+    //試合日は外す
+    let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
+    for (const m of MsgCollection.values()){
+        try {
+            if( m.embeds[0].description != null){
+                if(m.embeds[0].title == "月"){
+                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Mon" })
+                }else if(m.embeds[0].title == "火"){
+                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Tue" })
+                }else if(m.embeds[0].title == "水"){
+                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Wed" })
+                }else if(m.embeds[0].title == "木"){
+                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Thu" })
+                }else if(m.embeds[0].title == "金"){
+                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Fri" })
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    for(let id in scheduleJson.memberMinimumAttendance){
+        let ma = scheduleJson.memberMinimumAttendance[id] 
+        if(ma >= scheduleJson.days.length){
+            scheduleJson.memberMinimumAttendance[id] = Math.max([0,ma - (7-(config.offDay.length + scheduleJson.days.length))])
+        }
+    }
+
+    let options = {
+        uri: "http://tesuryo.pythonanywhere.com/",
+        headers: {
+          "Content-type": "application/json",
+        },
+        json: scheduleJson
+    };
+
+    //idと名前の対応表
+    id2name = {
+        '897418253419302913': 'あゆれ' ,
+        '689401267717668864': 'くわがた' ,
+        '715375802040057877': 'ぽりょり' ,
+        '719164347410153572':  'にし' ,
+        '876112815373557770':'たいが' ,
+        '552090713505005568':  'りんりん' ,
+        '781896580840030209': 'たかおみ' ,
+        '922864181424832513':  'べや' ,
+        '534894848508166165': 'トクソ' ,
+        '363333838715486208':  'ヤヤ' ,
+        '854694706423136266':  'りゅーと' ,
+        '1102801643080253450':  'からてん' ,
+        'guest1': 'ゲスト' ,
+        'guest2': 'ゲスト' 
+    }
+    let result = ""
+    const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+    const nowday = new Date().getDay()
+    console.log(scheduleJson.schedule)
+    request.post(options, function(error, response, body){
+        for (const p of [...scheduleJson.positions,...["off"]]){
+            for (const id of body[days[nowday]][p]){
+                if(!id.includes("guest") | p != "off") result += `${p}:${id2name[id]}\n`
+            }
+        }
+        console.log(result)
+      })
+}
+
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2023/06/11");
+    let day1 = new Date("2023/09/24");
     let day2 = new Date();
     let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % gusetManagerList.length
     
