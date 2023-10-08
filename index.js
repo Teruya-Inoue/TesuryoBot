@@ -135,7 +135,6 @@ http.createServer(function(req, res){
                 res.end();
                 return;
             }
-            console.log("post:" + dataObject.type);
             res.end();
         });
 
