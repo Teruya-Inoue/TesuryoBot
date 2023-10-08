@@ -253,7 +253,9 @@ cron.schedule(config.confirmTime,async ()=>{
             text += `フィールド${config.minPlayer}人に満たないので今日はfin`
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
-        }else if(notAns.length > 0 && fieldmemberNum == 10){//未回答がいるがフル集まった
+        }
+        /*
+        else if(notAns.length > 0 && fieldmemberNum == 10){//未回答がいるがフル集まった
             console.log("full")
             for (let id of [...userIdEachReactionList[0],...notAns]) text += `<@${id}> `;
             text += "\n@⭕と未回答の人たち\n全員回答完了してませんが"
@@ -269,7 +271,9 @@ cron.schedule(config.confirmTime,async ()=>{
             }
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
-        }else if (notAns.length == 0){//全員回答完了の場合
+        }
+        */
+        else if (notAns.length == 0){//全員回答完了の場合
 
             for (let id of userIdEachReactionList[0])text += `<@${id}> `;
             text += "\n\n@⭕の人たち\n全員回答完了 "
@@ -300,6 +304,7 @@ cron.schedule(config.confirmTime,async ()=>{
                 if( keeperNum == 0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send(text2);
             }
+            getPosition()
         }
     }
 });
@@ -330,7 +335,7 @@ cron.schedule(config.JudgeTime,async ()=>{
 
     //リーグ期間中で今日が土曜日 じゃないなら
     //オフじゃないなら
-    if(!(isLeague() && isLeagueDay())&&!isOff()){
+    if(!isOff()){
         
         let flag = await BooleanJudgeMessageExist(5)
         if(!flag){
@@ -389,7 +394,7 @@ cron.schedule(config.JudgeTime,async ()=>{
                     if(keeperNum ==0) text2+= " **GK**"
                     client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
                 }
-
+                getPosition()
             }else{
                 text += `全員回答完了していませんが、`
                 for (let id of notAns) text += `<@${id}> `;
@@ -497,7 +502,7 @@ async function GetTodayVoteReaction(
     {
 
     let TodayVoteArray = []
-    let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:25});
+    let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:30});
 
     for (const m of MsgCollection.values()) {
         if(m.author.id == botID && m.content == "" && m.createdAt.getDay() == targetDay){
@@ -622,15 +627,20 @@ async function getPosition(){
     let result = ""
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
     const nowday = new Date().getDay()
-    console.log(scheduleJson.schedule)
     request.post(options, function(error, response, body){
-        for (const p of [...scheduleJson.positions,...["off"]]){
-            for (const id of body[days[nowday]][p]){
-                if(!id.includes("guest") | p != "off") result += `${p}:${id2name[id]}\n`
+        //console.log(body)
+        if(config.offDay.includes(nowday)){
+            client.channels.cache.get("1118574751397466162").send("オフに動いてるよ");
+        }else{
+            for (const p of [...scheduleJson.positions,...["off"]]){
+                for (const id of body[days[nowday]][p]){
+                    if(!id.includes("guest") | p != "off") result += `${p}:${id2name[id]}\n`
+                }
             }
+            client.channels.cache.get(myChannels.ProClubVoteCh).send(result);
+            console.log(result)
         }
-        console.log(result)
-      })
+    })
 }
 
 //　ゲスト管理者計算
