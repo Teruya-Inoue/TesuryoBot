@@ -52,9 +52,12 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate,async (message) =>{
     //プロクラブ出欠確認用
     //リアクションしやすいように選択肢でリアクション
+    let booleanMatchDay = await isMatchDay() 
     if(message.author.id == botID 
         && message.content == "" 
-        && (message.channelId == myChannels.ProClubVoteCh | message.channelId == myChannels.WeekVoteCh)){
+        && message.channelId == myChannels.ProClubVoteCh
+        && !isOff() 
+        && !booleanMatchDay){
         message.react("⭕");
         message.react("❌");
         console.log("react to attendance voting by all choices of emoji")
@@ -148,7 +151,7 @@ http.createServer(function(req, res){
 }).listen(3000);
 
 //cron:プロクラブ出欠確認に投票投稿
-cron.schedule(config.VoteTime,()=>{
+cron.schedule(config.VoteTime,async ()=>{
     //今日がオフじゃないなら出欠確認を出す
     let embed;
 
@@ -162,12 +165,19 @@ cron.schedule(config.VoteTime,()=>{
         .setTitle(title)
         .setDescription(description)
         .setColor(0xff4500)
-    }else{
-        let title = "プロクラブ参加"
+    }else if(await isMatchDay()){
+        let title = "今日は公式戦"
         let description = 
-        `⭕ : できる
-        ❌ : できない
-        活動は22:30~`
+        `未回答の人は回答お願いします！\n<#${myChannels.WeekVoteCh}>`
+
+        embed = new EmbedBuilder()
+        .setTitle(title)
+        .setDescription(description)
+        .setColor(0xff4500)
+    }
+    else{
+        let title = "プロクラブ参加"
+        let description = "⭕ : できる\n❌ : できない\n活動は22:30~"
 
         embed = new EmbedBuilder()
         .setTitle(title)
@@ -179,26 +189,28 @@ cron.schedule(config.VoteTime,()=>{
 });
 
 //cron:プロクラブ出欠追跡メッセージ送信
-cron.schedule(config.TrackerTime,()=>{
+cron.schedule(config.TrackerTime,async ()=>{
     //今日がオフじゃないなら
-    if(!isOff()){
+    let booleanMatchDay = await isMatchDay()
+    if(!isOff() && !booleanMatchDay){
         SendTrackerText(myChannels.ProClubVoteCh, myChannels.ProClubVoteCh)
         console.log("sent TrackerMessage")
     }
 });
 
 //cron:プロクラブ出欠追跡テキスト更新
-cron.schedule(config.UpdateTime,()=>{
-    if(!isOff()) UpdateTrackerText(myChannels.ProClubVoteCh);
+cron.schedule(config.UpdateTime,async ()=>{
+    let booleanMatchDay = await isMatchDay()
+    if(!isOff() && !booleanMatchDay) UpdateTrackerText(myChannels.ProClubVoteCh);
 });
 
 //cron:全員回答完了か判定
 //全員回答完了したならばジャッジメッセージ送信
 cron.schedule(config.confirmTime,async ()=>{
     let flag = await BooleanJudgeMessageExist(5); //全員回答したか
-    
+    let booleanMatchDay = await isMatchDay()
     //オフじゃない かつ　ジャッジメッセージがない なら
-    if(!isOff() && !flag){
+    if(!isOff() && !flag && !booleanMatchDay){
         //リアクションした人取得
         let userIdEachReactionList = await GetAllTodayVoteReaction()
 
@@ -311,8 +323,9 @@ cron.schedule(config.confirmTime,async ()=>{
 
 //cron:回答リマインダー
 cron.schedule(config.reminderTime,async () =>{
-    //リーグ期間中で今日が土曜日 じゃないなら
-    if(!isOff()){
+    //オフじゃないなら
+    let booleanMatchDay = await isMatchDay()
+    if(!isOff() && !booleanMatchDay){
         let flag = await BooleanJudgeMessageExist(5)
         if(!flag){
             let arr = await GetAllTodayVoteReaction()
@@ -331,11 +344,10 @@ cron.schedule(config.reminderTime,async () =>{
 
 //cron:20時に全員回答していないときの挙動
 cron.schedule(config.JudgeTime,async ()=>{
-    let nowday = new Date().getDay()
-
+    let booleanMatchDay = await isMatchDay()
     //リーグ期間中で今日が土曜日 じゃないなら
     //オフじゃないなら
-    if(!isOff()){
+    if(!isOff() && !booleanMatchDay){
         
         let flag = await BooleanJudgeMessageExist(5)
         if(!flag){
@@ -461,6 +473,21 @@ function isOff(){
         }
     }
     return false
+}
+
+async function isMatchDay(){
+    let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
+    for (const m of MsgCollection.values()){
+        try {
+            if(m.embeds[0].description != null){
+                return true
+            }else{
+                return false
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 // 指定のユーザー、内容、チャンネルから最新n個メッセージをとってくる
