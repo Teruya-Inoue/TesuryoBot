@@ -80,10 +80,7 @@ client.on(Events.MessageCreate,async (message) =>{
                 .setDescription(dsp)
                 .setColor(m.embeds[0].color)
                 m.edit({embeds:[exampleEmbed]})
-                await m.reactions.removeAll();
-                await m.react("⭕")
                 await m.react("🚫")
-                await m.react("❌")
                 await m.react("❓")
             }
         }
