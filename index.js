@@ -585,9 +585,8 @@ async function GetSchedule(schedule){
             }else if(nowday<i){
                 voteReactionForEachReactionAtDayList = await GetWeekVoteReaction(targetDay=i)
             }
-            
             for (const id of voteReactionForEachReactionAtDayList[0]){
-                schedule[id][days[i]] = 1
+                if(id != keeperId)  schedule[id][days[i]] = 1
             }
         }
     }
@@ -617,13 +616,6 @@ async function getPosition(){
             }
         } catch (error) {
             console.log(error)
-        }
-    }
-
-    for(let id in scheduleJson.memberMinimumAttendance){
-        let ma = scheduleJson.memberMinimumAttendance[id] 
-        if(ma >= scheduleJson.days.length){
-            scheduleJson.memberMinimumAttendance[id] = Math.max([0,ma - (7-(config.offDay.length + scheduleJson.days.length))])
         }
     }
 
