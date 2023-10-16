@@ -474,12 +474,16 @@ function isOff(){
 
 async function isMatchDay(){
     let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
+    let days = ["日","月","火","水","木","金","土"]
+    let nowday = new Date().getDay()
     for (const m of MsgCollection.values()){
         try {
-            if(m.embeds[0].description != null){
-                return true
-            }else{
-                return false
+            if(m.embeds[0].title == days[nowday]){
+                if(m.embeds[0].description != null ){
+                    return true
+                }else{
+                    return false
+                }
             }
         } catch (error) {
             console.log(error)
