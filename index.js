@@ -85,6 +85,10 @@ client.on(Events.MessageCreate,async (message) =>{
             }
         }
     }
+
+    if(message.content == "?tesuryobot getpos"){
+        getPosition()
+    }
 })
 
 //リアクションが発生したときの挙動

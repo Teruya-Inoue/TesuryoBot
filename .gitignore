@@ -109,3 +109,4 @@ test.js
 member.json
 scheduleConfig.json
 .gitignore
+deploy-commands.js
