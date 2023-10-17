@@ -649,7 +649,7 @@ async function getPosition(){
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
     const nowday = new Date().getDay()
     request.post(options, function(error, response, body){
-        let result = ""
+        let result = "今日のメンバー\n"
         if(config.offDay.includes(nowday)){
             client.channels.cache.get("1118574751397466162").send("オフに動いてるよ");
         }else{
@@ -712,7 +712,7 @@ function GetTrackerText(userIdEachReactionList){
                     if(!mem.support){
                         text1 += mem.name+" "
                     }else{
-                        text1 += mem.name+"(ｻﾎﾟﾒﾝ) "
+                        text1 += mem.name+"(ｻﾎﾟ) "
                     }
                     break
                 }
@@ -738,7 +738,7 @@ function GetTrackerText(userIdEachReactionList){
                     if(!mem.support){
                         text3 += mem.name+" "
                     }else{
-                        text3 += mem.name+"(ｻﾎﾟﾒﾝ) "
+                        text3 += mem.name+"(ｻﾎﾟ) "
                     }
                     break
                 }
@@ -746,7 +746,7 @@ function GetTrackerText(userIdEachReactionList){
         }
     }
 
-    text += `:[${Hour}:${Min}:${Sec}時点の人数]\n**フィールド${fieldNum+smaru.length}人(うちｻﾎﾟﾒﾝ${smaru.length}人)・GK${GkNum}人・未回答${userIdNotAnsweredList.length}人\n残り${10-fieldNum}枠**`
+    text += `:[${Hour}:${Min}:${Sec}時点の人数]\n**フィールド${fieldNum+smaru.length}人・GK${GkNum}人\n未回答${userIdNotAnsweredList.length}人**`
     text += ("```" + text1 + "```")
     text += ("```" + text2 + "```")
     text += ("```" + text3 + "```")
