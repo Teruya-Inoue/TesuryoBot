@@ -586,7 +586,7 @@ async function GetSchedule(schedule){
                 voteReactionForEachReactionAtDayList = await GetWeekVoteReaction(targetDay=i)
             }
             for (const id of voteReactionForEachReactionAtDayList[0]){
-                if(id != keeperId)  schedule[id][days[i]] = 1
+                schedule[id][days[i]] = 1
             }
         }
     }
@@ -632,23 +632,24 @@ async function getPosition(){
         '897418253419302913': 'あゆれ' ,
         '689401267717668864': 'くわがた' ,
         '715375802040057877': 'ぽりょり' ,
-        '719164347410153572':  'にし' ,
-        '876112815373557770':'たいが' ,
-        '552090713505005568':  'りんりん' ,
+        '719164347410153572': 'にし' ,
+        '876112815373557770': 'たいが' ,
+        '552090713505005568': 'りんりん' ,
         '781896580840030209': 'たかおみ' ,
-        '922864181424832513':  'べや' ,
+        '922864181424832513': 'べや' ,
         '534894848508166165': 'トクソ' ,
-        '363333838715486208':  'ヤヤ' ,
-        '854694706423136266':  'りゅーと' ,
-        '1102801643080253450':  'からてん' ,
+        '363333838715486208': 'ヤヤ' ,
+        '430749616301015042':  'ソノ',
+        '854694706423136266': 'りゅーと' ,
+        '1102801643080253450':'からてん' ,
         'guest1': 'ゲスト' ,
         'guest2': 'ゲスト' 
     }
-    let result = ""
+    
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
     const nowday = new Date().getDay()
     request.post(options, function(error, response, body){
-        //console.log(body)
+        let result = ""
         if(config.offDay.includes(nowday)){
             client.channels.cache.get("1118574751397466162").send("オフに動いてるよ");
         }else{
