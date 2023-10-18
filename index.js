@@ -52,6 +52,8 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate,async (message) =>{
     //プロクラブ出欠確認用
     //リアクションしやすいように選択肢でリアクション
+    if(message.guildId!="961573520855425074" | message.guildId!="1093830109783412756") return
+    
     let booleanMatchDay = await isMatchDay() 
     if(message.author.id == botID 
         && message.content == "" 
@@ -518,10 +520,14 @@ async function GetAllTodayVoteReaction(targetDay = new Date().getDay()){
     
     await Promise.all([GetTodayVoteReaction(targetDay = targetDay),GetWeekVoteReaction(targetDay = targetDay)])
     .then(values =>{
-        for(let i = 0 ; i< config.emojisForVoteReaction.length;i++){
-            let mergedArray = [...new Set([...values[0][i],...values[1][i]])]
-            TodayVoteReaction.push(mergedArray)
-        }
+        let todayMaru = values[0][0]
+        let todayBatu = values[0][1]
+        let weekMaru = values[1][0].filter(id => ![...values[0][0],...values[0][1]].includes(id))
+        let weeKBatu = values[1][1].filter(id => ![...values[0][0],...values[0][1]].includes(id))
+
+        TodayVoteReaction.push([...new Set([...todayMaru,...weekMaru])])
+        TodayVoteReaction.push([...new Set([...todayBatu,...weeKBatu])])
+
     })
     return TodayVoteReaction
 }
