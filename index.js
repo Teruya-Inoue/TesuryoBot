@@ -52,8 +52,8 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate,async (message) =>{
     //プロクラブ出欠確認用
     //リアクションしやすいように選択肢でリアクション
-    if(message.guildId!="961573520855425074" | message.guildId!="1093830109783412756") return
     
+
     let booleanMatchDay = await isMatchDay() 
     if(message.author.id == botID 
         && message.content == "" 
