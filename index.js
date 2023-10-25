@@ -613,7 +613,7 @@ async function GetSchedule(schedule){
 }
 
 //ポジション取得
-async function getPosition(targetDay = new Date().getDay(),channel = myChannels.ProClubVoteCh){
+async function getPosition(targetDay = new Date().getDay()){
     scheduleJson.schedule = await GetSchedule(scheduleJson.schedule)
 
     //試合日は外す
@@ -647,7 +647,7 @@ async function getPosition(targetDay = new Date().getDay(),channel = myChannels.
     };
     
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-    
+
     request.post(options, function(error, response, body){
         let result = "今日のメンバー\n"
         if(config.offDay.includes(targetDay)){
@@ -658,7 +658,7 @@ async function getPosition(targetDay = new Date().getDay(),channel = myChannels.
                     if(!id.includes("guest") | p != "off") result += `${p}:${memberJson.id2name[id]}\n`
                 }
             }
-            client.channels.cache.get(channel).send(result);
+            client.channels.cache.get(myChannels.ProClubVoteCh).send(result);
             console.log(result)
         }
     })
