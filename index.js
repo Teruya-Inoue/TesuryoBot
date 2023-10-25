@@ -666,7 +666,7 @@ async function getPosition(targetDay = new Date().getDay()){
 
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2023/09/24");
+    let day1 = new Date("2023/09/17");
     let day2 = new Date();
     let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % gusetManagerList.length
     
