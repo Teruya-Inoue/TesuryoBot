@@ -52,7 +52,7 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate,async (message) =>{
     //プロクラブ出欠確認用
     //リアクションしやすいように選択肢でリアクション
-    
+    if(message.guildId == "989520271289491496") return
 
     let booleanMatchDay = await isMatchDay() 
     if(message.author.id == botID 
@@ -478,6 +478,7 @@ function isOff(){
     return false
 }
 
+//試合日か判定
 async function isMatchDay(){
     let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
     let days = ["日","月","火","水","木","金","土"]
@@ -514,6 +515,8 @@ async function BooleanJudgeMessageExist(messageNum){
     return false
 }
 
+//当日と週の合わせたリアクションを取得
+//当日＞週
 async function GetAllTodayVoteReaction(targetDay = new Date().getDay()){
     let TodayVoteReaction = [];
     //let WeekVoteReaction;
@@ -584,9 +587,11 @@ async function GetWeekVoteReaction(
     return Promise.all(weekVoteArray)
 }
 
+//週の予定取得
 async function GetSchedule(schedule){
     let nowday = new Date().getDay()
     let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+
     for(let i = 0;i<7;i++){
         if(!config.offDay.includes(i)){
             let voteReactionForEachReactionAtDayList;
@@ -596,7 +601,11 @@ async function GetSchedule(schedule){
                 voteReactionForEachReactionAtDayList = await GetWeekVoteReaction(targetDay=i)
             }
             for (const id of voteReactionForEachReactionAtDayList[0]){
-                schedule[id][days[i]] = 1
+                try {
+                    schedule[id][days[i]] = 1
+                } catch (error) {
+                    console.log(error)
+                }
             }
         }
     }
@@ -604,7 +613,7 @@ async function GetSchedule(schedule){
 }
 
 //ポジション取得
-async function getPosition(){
+async function getPosition(targetDay = new Date().getDay(),channel = myChannels.ProClubVoteCh){
     scheduleJson.schedule = await GetSchedule(scheduleJson.schedule)
 
     //試合日は外す
@@ -636,39 +645,20 @@ async function getPosition(){
         },
         json: scheduleJson
     };
-
-    //idと名前の対応表
-    id2name = {
-        '897418253419302913': 'あゆれ' ,
-        '689401267717668864': 'くわがた' ,
-        '715375802040057877': 'ぽりょり' ,
-        '719164347410153572': 'にし' ,
-        '876112815373557770': 'たいが' ,
-        '552090713505005568': 'りんりん' ,
-        '781896580840030209': 'たかおみ' ,
-        '922864181424832513': 'べや' ,
-        '534894848508166165': 'トクソ' ,
-        '363333838715486208': 'ヤヤ' ,
-        '430749616301015042':  'ソノ',
-        '854694706423136266': 'りゅーと' ,
-        '1102801643080253450':'からてん' ,
-        'guest1': 'ゲスト' ,
-        'guest2': 'ゲスト' 
-    }
     
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-    const nowday = new Date().getDay()
+    
     request.post(options, function(error, response, body){
         let result = "今日のメンバー\n"
-        if(config.offDay.includes(nowday)){
+        if(config.offDay.includes(targetDay)){
             client.channels.cache.get("1118574751397466162").send("オフに動いてるよ");
         }else{
             for (const p of [...scheduleJson.positions,...["off"]]){
-                for (const id of body[days[nowday]][p]){
-                    if(!id.includes("guest") | p != "off") result += `${p}:${id2name[id]}\n`
+                for (const id of body[days[targetDay]][p]){
+                    if(!id.includes("guest") | p != "off") result += `${p}:${memberJson.id2name[id]}\n`
                 }
             }
-            client.channels.cache.get(myChannels.ProClubVoteCh).send(result);
+            client.channels.cache.get(channel).send(result);
             console.log(result)
         }
     })
