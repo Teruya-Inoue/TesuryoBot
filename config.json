@@ -1,5 +1,5 @@
 {
-    "minPlayer":8,
+    "minPlayer":7,
     "offDay":[0,6],
     "offDate":[
         {"start":"-01-01T00:00:00+0900","end":"-01-03T23:59:59+0900"},
@@ -15,5 +15,5 @@
     "reminderTime"   :"0 18 * * *",
     "JudgeTime":"0 20 * * *",
     "GuestManagerTime" :"58 5 * * Mon",
-    "WeekVoteResetTime":"0 6 * * Sat"
+    "WeekVoteResetTime":"0 23 * * Fri"
 }

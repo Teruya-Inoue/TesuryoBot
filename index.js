@@ -6,6 +6,7 @@ const request = require('request')
 const config = require("./config.json");
 const memberJson = require("./member.json")
 let scheduleJson = require("./scheduleConfig.json")
+let leagueFixtureJson = require("./leagueFixture.json")
 
 //わかりやすく
 const Members = memberJson.members
@@ -426,6 +427,7 @@ cron.schedule(config.JudgeTime,async ()=>{
                     if(keeperNum ==0) text2+= " **GK**"
                     client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
                 }
+                getPosition()
             }
         }
     }
@@ -443,18 +445,47 @@ cron.schedule(config.GuestManagerTime,()=>{
 //cron:週出欠リアクションリセット
 cron.schedule(config.WeekVoteResetTime,async ()=>{
     let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
+
+    // 現在の日付を取得
+    const currentDate = new Date();
+    // 1週間後の日付を計算
+    const oneWeekLater = new Date(currentDate);
+    oneWeekLater.setDate(currentDate.getDate() + 7);
+    const year = oneWeekLater.getFullYear()
+    const month = oneWeekLater.getMonth()
+    const date = oneWeekLater.getDate()
+
     for (const m of MsgCollection.values()){
         await m.reactions.removeAll();
         for (let emoji of config.emojisForVoteReaction) await m.react(emoji)
+
         try {
             let defaultEmbed = new EmbedBuilder()
             .setTitle(m.embeds[0].title)
             .setDescription(null)
             .setColor(m.embeds[0].color)
             m.edit({embeds:[defaultEmbed]})
+
+            if(m.embeds[0].title =="金"){
+                for(const md of leagueFixtureJson.match){
+                    if(md.year == year && md.month == month && md.date == date){
+                        let defaultEmbed = new EmbedBuilder()
+                        .setTitle(m.embeds[0].title)
+                        .setDescription(md.opponent)
+                        .setColor(m.embeds[0].color)
+                        m.edit({embeds:[defaultEmbed]})   
+                        await m.react("🚫")
+                        await m.react("❓")
+                        break
+                    }
+                }
+            }
+
         } catch (error) {
             console.log(error)
         }
+
+       
     }
 })
 
@@ -666,7 +697,7 @@ async function getPosition(targetDay = new Date().getDay()){
 
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2023/09/17");
+    let day1 = new Date("2023/10/01");
     let day2 = new Date();
     let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % gusetManagerList.length
     
