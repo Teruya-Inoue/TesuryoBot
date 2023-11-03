@@ -6,7 +6,7 @@
         {"start":"-12-28T00:00:00+0900","end":"-12-31T23:59:59+0900"}
     ],
 
-    "emojisForVoteReaction":["⭕","❌"],
+    "emojisForVoteReaction":["⭕","❌","",""],
 
     "VoteTime"    :"59 5 * * *",
     "TrackerTime" :"20 59 5 * * *",
@@ -15,5 +15,5 @@
     "reminderTime"   :"0 18 * * *",
     "JudgeTime":"0 20 * * *",
     "GuestManagerTime" :"58 5 * * Mon",
-    "WeekVoteResetTime":"0 23 * * Fri"
+    "WeekVoteResetTime":"59 23 * * Fri"
 }

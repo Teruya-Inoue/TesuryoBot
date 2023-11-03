@@ -30,7 +30,7 @@ for (let member of Members){
 }
 
 //チャンネル
-const myChannels ={
+const myChannels = {
     ProClubVoteCh : '972816498215227402',  //プロクラブ出欠確認
     WeekVoteCh    : '1138445755619758150',
 }
@@ -66,7 +66,7 @@ client.on(Events.MessageCreate,async (message) =>{
         console.log("react to attendance voting by all choices of emoji")
         return;
     }
-
+    
     if(message.content.includes("?tesuryobot matchday")){
         let Operation = message.content.split(" ")
         let day = Operation[2]
@@ -87,10 +87,6 @@ client.on(Events.MessageCreate,async (message) =>{
                 await m.react("❓")
             }
         }
-    }
-
-    if(message.content == "?tesuryobot getpos"){
-        getPosition()
     }
 })
 
@@ -270,25 +266,6 @@ cron.schedule(config.confirmTime,async ()=>{
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
         }
-        /*
-        else if(notAns.length > 0 && fieldmemberNum == 10){//未回答がいるがフル集まった
-            console.log("full")
-            for (let id of [...userIdEachReactionList[0],...notAns]) text += `<@${id}> `;
-            text += "\n@⭕と未回答の人たち\n全員回答完了してませんが"
-                
-            if(fieldmemberNum == 10 && smemberNum == 0){//22:30からのメンバー含んでフィールド正規メンバーが10人 && サポメン0人
-                text += "フィールド10人集まりました!\n**22:30から活動!**\n"
-            }else if(fieldmemberNum == 10 && smemberNum > 0){//22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン1人以上
-                text += "フィールド10人集まりました!\n**22:30から活動!**\n"
-                text += "サポメンさんは休みです!"
-            }
-            if(keeperNum==-1){
-                text += "\n(キーパーは未回答)"
-            }
-            client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
-
-        }
-        */
         else if (notAns.length == 0){//全員回答完了の場合
 
             for (let id of userIdEachReactionList[0])text += `<@${id}> `;
@@ -446,11 +423,10 @@ cron.schedule(config.GuestManagerTime,()=>{
 cron.schedule(config.WeekVoteResetTime,async ()=>{
     let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
 
-    // 現在の日付を取得
     const currentDate = new Date();
     // 1週間後の日付を計算
-    const oneWeekLater = new Date(currentDate);
-    oneWeekLater.setDate(currentDate.getDate() + 7);
+    const oneWeekLater = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    
     const year = oneWeekLater.getFullYear()
     const month = oneWeekLater.getMonth()
     const date = oneWeekLater.getDate()
@@ -468,7 +444,7 @@ cron.schedule(config.WeekVoteResetTime,async ()=>{
 
             if(m.embeds[0].title =="金"){
                 for(const md of leagueFixtureJson.match){
-                    if(md.year == year && md.month == month && md.date == date){
+                    if(md.year == year && md.month == month + 1 && md.date == date){
                         let defaultEmbed = new EmbedBuilder()
                         .setTitle(m.embeds[0].title)
                         .setDescription(md.opponent)
@@ -480,12 +456,9 @@ cron.schedule(config.WeekVoteResetTime,async ()=>{
                     }
                 }
             }
-
         } catch (error) {
             console.log(error)
         }
-
-       
     }
 })
 
