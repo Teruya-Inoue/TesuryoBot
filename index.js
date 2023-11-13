@@ -653,7 +653,7 @@ async function getPosition(targetDay = new Date().getDay()){
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
     request.post(options, function(error, response, body){
-        let result = "今日のメンバー\n"
+        let result = "今日のメンバー\nメンバーは確定・ポジは参考までに\n"
         if(config.offDay.includes(targetDay)){
             client.channels.cache.get("1118574751397466162").send("オフに動いてるよ");
         }else{

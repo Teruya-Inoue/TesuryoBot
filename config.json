@@ -1,5 +1,5 @@
 {
-    "minPlayer":7,
+    "minPlayer":8,
     "offDay":[0,6],
     "offDate":[
         {"start":"-01-01T00:00:00+0900","end":"-01-03T23:59:59+0900"},
