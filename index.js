@@ -751,6 +751,10 @@ function GetTrackerText(userIdEachReactionList){
     }
 
     text += `:[${Hour}:${Min}:${Sec}時点の人数]\n**フィールド${fieldNum+smaru.length}人・GK${GkNum}人\n未回答${userIdNotAnsweredList.length}人**`
+    if(fieldNum+smaru.length>=8){text+="\n**活動確定**"}
+    else{
+        text+="\n活動未確定"
+    }
     text += ("```" + text1 + "```")
     text += ("```" + text2 + "```")
     text += ("```" + text3 + "```")
