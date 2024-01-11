@@ -1,5 +1,5 @@
 // Require 
-const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials} = require('discord.js');
+const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials,ButtonBuilder, ButtonStyle, ActionRowBuilder} = require('discord.js');
 const http = require('http');
 const cron = require('node-cron');
 const request = require('request')
@@ -289,13 +289,19 @@ cron.schedule(config.confirmTime,async ()=>{
 
             //ゲス募内容送信
             if(10 > fieldNum | keeperNum == 0){
+                const button = new ButtonBuilder()
+                .setLabel('ゲス募する')
+                .setURL('https://twitter.com/intent/tweet?text=Tesuryo%2022%EF%BC%9A30~%0A%E3%82%B2%E3%82%B9%E5%8B%9F%EF%BC%A0%E3%80%90%E4%BA%BA%E6%95%B0%E3%80%91%0A4321%E3%81%AE%E3%80%90%E3%83%9D%E3%82%B8%E3%80%91%0ADM%E3%81%BE%E3%81%9F%E3%81%AF%E3%83%AA%E3%83%97%E3%83%A9%E3%82%A4%E3%81%BE%E3%81%A7%E3%81%8A%E9%A1%98%E3%81%84%E3%81%84%E3%81%9F%E3%81%97%E3%81%BE%E3%81%99%EF%BC%81%0A%23%E3%83%97%E3%83%AD%E3%82%AF%E3%83%A9%E3%83%96')
+                .setStyle(ButtonStyle.Link);
+                const br = new ActionRowBuilder().addComponents(button)
+            
                 let text2 = "@週担当 "
                 //ゲス募管理者がどっちかいるとき
                 for (let id of gm) text2 += `<@${id}> `;
                 text2 +=`\nゲス募よろしくお願いします!\n ゲス募:`
                 if( fieldNum < 10) text2 += `**フィールド${10-fieldNum}人**`
                 if( keeperNum == 0) text2+= " **GK**"
-                client.channels.cache.get(myChannels.ProClubVoteCh).send(text2);
+                client.channels.cache.get(myChannels.ProClubVoteCh).send({content:text2,components:[br]});
             }
             getPosition()
         }
