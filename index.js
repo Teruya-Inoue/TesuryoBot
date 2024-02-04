@@ -1,8 +1,17 @@
 // Require 
-const {Client, GatewayIntentBits, EmbedBuilder, Events, Partials,ButtonBuilder, ButtonStyle, ActionRowBuilder} = require('discord.js');
+const {
+    Client, 
+    GatewayIntentBits, 
+    EmbedBuilder, 
+    Events, 
+    Partials,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder} = require('discord.js');
+
 const http = require('http');
+const request = require('request');
 const cron = require('node-cron');
-const request = require('request')
 const config = require("./config.json");
 const memberJson = require("./member.json")
 let scheduleJson = require("./scheduleConfig.json")
@@ -16,17 +25,19 @@ const botID = "991590117036806234";
 //メンバーリスト
 const MemberList = []//固定
 const SMemberList = []//サポメン
-const gusetManagerList = []
+const gusetManagerList = memberJson.guestmanager
 
 let keeperId = "";
+
 for (let member of Members){
+    //アクティブメンバー
     if(member.active) {
         MemberList.push(member.id)
         if(member.keeper) keeperId = member.id
+    //サポートメンバー
     }else{
         SMemberList.push(member.id)
     }
-    if(member.guestmanager) gusetManagerList.push(member.id)
 }
 
 //チャンネル
@@ -53,9 +64,8 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate,async (message) =>{
     //プロクラブ出欠確認用
     //リアクションしやすいように選択肢でリアクション
-    if(message.guildId == "989520271289491496") return
-
     let booleanMatchDay = await isMatchDay() 
+
     if(message.author.id == botID 
         && message.content == "" 
         && message.channelId == myChannels.ProClubVoteCh
@@ -165,6 +175,7 @@ cron.schedule(config.VoteTime,async ()=>{
         .setTitle(title)
         .setDescription(description)
         .setColor(0xff4500)
+
     }else if(await isMatchDay()){
         let title = "今日は公式戦"
         let description = 
@@ -177,8 +188,7 @@ cron.schedule(config.VoteTime,async ()=>{
     }
     else{
         let title = "プロクラブ参加"
-        let description = "⭕ : できる\n❌ : できない\n活動は22:30~"
-
+        let description = "⭕ : できる\n❌ : できない\n20時までに回答するように。20時までにわからない・待ってほしい場合は <#1004623298107281409>に連絡を"
         embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(description)
@@ -207,16 +217,17 @@ cron.schedule(config.UpdateTime,async ()=>{
 //cron:全員回答完了か判定
 //全員回答完了したならばジャッジメッセージ送信
 cron.schedule(config.confirmTime,async ()=>{
+
     let flag = await BooleanJudgeMessageExist(5); //全員回答したか
     let booleanMatchDay = await isMatchDay()
-    //オフじゃない かつ　ジャッジメッセージがない なら
+
+    //オフじゃない かつ　ジャッジメッセージがない かつ試合日でないなら
     if(!isOff() && !flag && !booleanMatchDay){
         //リアクションした人取得
         let userIdEachReactionList = await GetAllTodayVoteReaction()
 
         //各リアクションのメンバー
-        let maru    = userIdEachReactionList[0].filter(id=>MemberList.includes(id)) //正規メンバーの⭕
-        let smaru   = userIdEachReactionList[0].filter(id=>SMemberList.includes(id))//サポメンの⭕
+        let maru    = userIdEachReactionList[0]//⭕
         let batu    = userIdEachReactionList[1]//❌
 
         //答えた人、答えてない人
@@ -224,27 +235,22 @@ cron.schedule(config.confirmTime,async ()=>{
         let notAns = MemberList.filter(id => !Ans.includes(id))
 
         //判定用
-        let fieldmemberNum = maru.length //フィールド正規メンバーの人数
-        let smemberNum = smaru.length //サポメンの人数
         let keeperNum //キーパーの数
-        let fieldNum //フィールドの数
+        let fieldNum = maru.length//フィールドの数
         let judgeNum //活動かfinか判定用の変数
         
         //キーパーが⭕のとき
-        if(userIdEachReactionList[0].includes(keeperId)){
+        if(maru.includes(keeperId)){
             keeperNum = 1
-            fieldmemberNum -= 1
-            fieldNum = fieldmemberNum + smemberNum
+            fieldNum -= 1
             judgeNum = fieldNum + notAns.length
         //キーパーが❌のとき
         }else if(batu.includes(keeperId)){
             keeperNum = 0
-            fieldNum = fieldmemberNum + smemberNum
             judgeNum = fieldNum + notAns.length
         //キーパーが未回答のとき
         }else if(notAns.includes(keeperId)){
             keeperNum = -1
-            fieldNum = fieldmemberNum + smemberNum
             judgeNum = fieldNum + notAns.length - 1
         }
         
@@ -255,11 +261,11 @@ cron.schedule(config.confirmTime,async ()=>{
         if(judgeNum < config.minPlayer){//fin
             //全員回答済み
             if(notAns.length == 0){
-                for (let id of userIdEachReactionList[0]) text += `<@${id}> `;
+                for (let id of maru) text += `<@${id}> `;
                 text += "\n@⭕の人たち\n全員回答完了 "
             //未回答者アリ
             }else{
-                for (let id of [...userIdEachReactionList[0],...notAns]) text += `<@${id}> `;
+                for (let id of [...maru,...notAns]) text += `<@${id}> `;
                 text += "\n@⭕と未回答の人たち\n全員回答完了してませんが"
             }
             text += `フィールド${config.minPlayer}人に満たないので今日はfin`
@@ -268,22 +274,13 @@ cron.schedule(config.confirmTime,async ()=>{
         }
         else if (notAns.length == 0){//全員回答完了の場合
 
-            for (let id of userIdEachReactionList[0])text += `<@${id}> `;
+            for (let id of maru)text += `<@${id}> `;
             text += "\n\n@⭕の人たち\n全員回答完了 "
 
-            if(fieldmemberNum == 10 && smemberNum == 0){ //22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン0人
+            if(fieldNum >= 10){
                 text += "フィールド10人集まりました!\n**22:30から活動!**\n"
-
-           
-            }else if(fieldmemberNum == 10 && smemberNum > 0){ //22:30からのメンバーも含んでフィールド正規メンバーが10人&&サポメン1人以上
-                text += "フィールド10人集まりました!\n**22:30から活動!**\n"
-                text += "サポメンさんは休みです!"
-
-            }else if(fieldmemberNum < 10 && smemberNum == 0){ //22:30からのメンバーも含んでフィールド正規メンバーが10人未満&&サポメン0人
+            }else if(fieldNum < 10){ 
                 text += `フィールド${fieldNum}人集まりました!\n**22:30から活動!**\n`
-           
-            }else if(fieldmemberNum < 10 && smemberNum > 0){ //(to do)22:30からのメンバーも含んでフィールド正規メンバーが10人未満&&サポメン1人以上
-                
             }
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
@@ -296,7 +293,6 @@ cron.schedule(config.confirmTime,async ()=>{
                 const br = new ActionRowBuilder().addComponents(button)
             
                 let text2 = "@週担当 "
-                //ゲス募管理者がどっちかいるとき
                 for (let id of gm) text2 += `<@${id}> `;
                 text2 +=`\nゲス募よろしくお願いします!\n ゲス募:`
                 if( fieldNum < 10) text2 += `**フィールド${10-fieldNum}人**`
@@ -332,86 +328,82 @@ cron.schedule(config.reminderTime,async () =>{
 //cron:20時に全員回答していないときの挙動
 cron.schedule(config.JudgeTime,async ()=>{
     let booleanMatchDay = await isMatchDay()
+    let flag = await BooleanJudgeMessageExist(5)
     //リーグ期間中で今日が土曜日 じゃないなら
     //オフじゃないなら
-    if(!isOff() && !booleanMatchDay){
+    if(!isOff() && !booleanMatchDay && !flag){
+        //リアクションした人取得
+        let userIdEachReactionList = await GetAllTodayVoteReaction()
+
+        //各リアクションのメンバー
+        let maru    = userIdEachReactionList[0]//⭕
+        let batu    = userIdEachReactionList[1]//❌
+
+        //答えた人、答えてない人
+        let Ans = [...userIdEachReactionList[0], ...userIdEachReactionList[1]]
+        let notAns = MemberList.filter(id => !Ans.includes(id))
+
+        //判定用
+        let keeperNum //キーパーの数
+        let fieldNum = maru.length//フィールドの数
+        let judgeNum //活動かfinか判定用の変数
         
-        let flag = await BooleanJudgeMessageExist(5)
-        if(!flag){
-            let userIdEachReactionList = await GetAllTodayVoteReaction()
+        //キーパーが⭕のとき
+        if(maru.includes(keeperId)){
+            keeperNum = 1
+            fieldNum -= 1
+            judgeNum = fieldNum + notAns.length
+        //キーパーが❌のとき
+        }else if(batu.includes(keeperId)){
+            keeperNum = 0
+            judgeNum = fieldNum + notAns.length
+        //キーパーが未回答のとき
+        }else if(notAns.includes(keeperId)){
+            keeperNum = -1
+            judgeNum = fieldNum + notAns.length - 1
+        }
+        
+        //ゲスト管理者
+        let gm = GetGuestManager()
+        let text =""
             
-            //各リアクションのメンバー
-            let maru    = userIdEachReactionList[0].filter(id=>MemberList.includes(id)) //正規メンバーの⭕
-            let smaru   = userIdEachReactionList[0].filter(id=>SMemberList.includes(id))//サポメンの⭕
-            let batu    = userIdEachReactionList[1]//❌
+        //8人以上いる
+        if(fieldNum >= config.minPlayer){
+            for (let id of userIdEachReactionList[0])text += `<@${id}> `;
+            text += "@⭕の人たち"
+            text += `全員回答完了していませんが、フィールド${fieldNum}人集まってるので活動ありです！\n`
+            text += "**22:30から活動!**\n"
+            client.channels.cache.get(myChannels.ProClubVoteCh).send(text)
 
-            //答えた人、答えてない人
-            let Ans = [...userIdEachReactionList[0], ...userIdEachReactionList[1]]
-            let notAns = MemberList.filter(id => !Ans.includes(id))
+            if(10 > fieldNum | keeperNum==0){
+                let text2 = "@週担当 "
 
-            //判定用
-            let fieldmemberNum = maru.length //フィールド正規メンバーの人数
-            let smemberNum = smaru.length //サポメンの人数
-            let keeperNum= 0 //キーパーの数
-            let fieldNum = fieldmemberNum + smemberNum//フィールドの数
-            let judgeNum = fieldNum + notAns.length//活動かfinか判定用の変数
-
-            //キーパーが⭕のとき
-            if(userIdEachReactionList[0].includes(keeperId)){
-                keeperNum = 1
-                fieldmemberNum -= 1
-                fieldNum = fieldmemberNum + smemberNum
-                judgeNum = fieldNum + notAns.length
-            //キーパーが❌のとき
-            }else if(batu.includes(keeperId)){
-                keeperNum = 0
-                fieldNum = fieldmemberNum + smemberNum
-                judgeNum = fieldNum + notAns.length
-            //キーパーが未回答のとき
-            }else if(notAns.includes(keeperId)){
-                keeperNum = -1
-                fieldNum = fieldmemberNum + smemberNum
-                judgeNum = fieldNum + notAns.length - 1
+                for (let id of gm)text2 += `<@${id}> `;
+                text2 +=`\nゲス募よろしくお願いします!(未回答者をいつまで待つかは任せます)\n ゲス募:`
+                if(fieldNum<10) text2 += `**フィールド${10-fieldNum}人**`
+                if(keeperNum ==0) text2+= " **GK**"
+                client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
             }
+            getPosition()
 
-            let gm = GetGuestManager()
-            let text =""
-            
-            if(fieldNum>=config.minPlayer){
-                for (let id of userIdEachReactionList[0])text += `<@${id}> `;
-                text += "@⭕の人たち"
-                text += `全員回答完了していませんが、フィールド${fieldNum}人集まってるので活動ありです！\n`
-                text += "**22:30から活動!**\n"
-                client.channels.cache.get(myChannels.ProClubVoteCh).send(text)
+        //8人いない
+        }else{
+            text += `全員回答完了していませんが、`
+            for (let id of notAns) text += `<@${id}> `;
+            text +=`の中から${config.minPlayer - fieldNum}人⭕なら活動アリです！\n回答したら何か連絡ください。\n`
+            text += "活動ありなら**22:30から活動予定**\n"
+            client.channels.cache.get(myChannels.ProClubVoteCh).send(text)
 
-                if(10 > fieldNum | keeperNum==0){
-                    let text2 = "@週担当 "
-
-                    for (let id of gm)text2 += `<@${id}> `;
-                    text2 +=`\nゲス募よろしくお願いします!(未回答者をいつまで待つかは任せます)\n ゲス募:`
-                    if(fieldNum<10) text2 += `**フィールド${10-fieldNum}人**`
-                    if(keeperNum ==0) text2+= " **GK**"
-                    client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
-                }
-                getPosition()
-            }else{
-                text += `全員回答完了していませんが、`
-                for (let id of notAns) text += `<@${id}> `;
-                text +=`の中から${config.minPlayer - fieldNum}人⭕なら活動アリです！\n回答したら何か連絡ください。\n`
-                text += "活動ありなら**22:30から活動予定**\n"
-                client.channels.cache.get(myChannels.ProClubVoteCh).send(text)
-
-                if(10 > fieldNum | keeperNum==0){
-                    let text2 = "@週担当 "
+            if(10 > fieldNum | keeperNum==0){
+                let text2 = "@週担当 "
                     
-                    for (let id of gm)text2 += `<@${id}> `;
-                    text2 +=`\n活動ありならゲス募よろしくお願いします!(未回答者をいつまで待つかは任せます)\n ゲス募:`
-                    if(fieldNum<10) text2 += `**フィールド${10-judgeNum}~2人**`
-                    if(keeperNum ==0) text2+= " **GK**"
-                    client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
-                }
-                getPosition()
+                for (let id of gm)text2 += `<@${id}> `;
+                text2 +=`\n活動ありならゲス募よろしくお願いします!(未回答者をいつまで待つかは任せます)\n ゲス募:`
+                if(fieldNum<10) text2 += `**フィールド${10-judgeNum}~2人**`
+                if(keeperNum ==0) text2+= " **GK**"
+                client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
             }
+            getPosition()
         }
     }
 })
@@ -676,7 +668,7 @@ async function getPosition(targetDay = new Date().getDay()){
 
 //　ゲスト管理者計算
 function GetGuestManager(){
-    let day1 = new Date("2023/10/01");
+    let day1 = new Date("2024/02/05");
     let day2 = new Date();
     let num = Math.floor((day2 - day1) / 86400000 / 7 ) * 2 % gusetManagerList.length
     
