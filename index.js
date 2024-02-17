@@ -188,7 +188,7 @@ cron.schedule(config.VoteTime,async ()=>{
     }
     else{
         let title = "プロクラブ参加"
-        let description = "⭕ : できる\n❌ : できない\n20時までに回答するように。20時までにわからない・待ってほしい場合は <#1004623298107281409>に連絡を"
+        let description = "⭕ : できる\n❌ : できない\n20時までにわからない・待ってほしい場合は <#1004623298107281409>に連絡を"
         embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(description)
@@ -449,7 +449,6 @@ cron.schedule(config.WeekVoteResetTime,async ()=>{
                         .setColor(m.embeds[0].color)
                         m.edit({embeds:[defaultEmbed]})   
                         await m.react("🚫")
-                        await m.react("❓")
                         break
                     }
                 }
@@ -525,14 +524,19 @@ async function GetAllTodayVoteReaction(targetDay = new Date().getDay()){
     
     await Promise.all([GetTodayVoteReaction(targetDay = targetDay),GetWeekVoteReaction(targetDay = targetDay)])
     .then(values =>{
-        let todayMaru = values[0][0]
-        let todayBatu = values[0][1]
-        let weekMaru = values[1][0].filter(id => ![...values[0][0],...values[0][1]].includes(id))
-        let weeKBatu = values[1][1].filter(id => ![...values[0][0],...values[0][1]].includes(id))
+        let numR = Math.min(values[0].length,values[1].length) 
 
-        TodayVoteReaction.push([...new Set([...todayMaru,...weekMaru])])
-        TodayVoteReaction.push([...new Set([...todayBatu,...weeKBatu])])
+        let todayall = []
+        for (let i = 0 ; i < numR;i++){
+            todayall = todayall.concat(values[0][i])
+        }
+        todayall = Array.from(new Set(todayall))
 
+        for(let i = 0 ; i < numR;i++){
+            let todayR = values[0][i]
+            let weekR = values[1][i].filter(id => !todayall.includes(id))
+            TodayVoteReaction.push(Array.from(new Set([...todayR,...weekR])))
+        }
     })
     return TodayVoteReaction
 }
@@ -540,15 +544,27 @@ async function GetAllTodayVoteReaction(targetDay = new Date().getDay()){
 //当日出欠のリアクション取得
 async function GetTodayVoteReaction(
     targetDay = new Date().getDay(), 
-    channel = myChannels.ProClubVoteCh, 
-    emojis = config.emojisForVoteReaction)
+    channel = myChannels.ProClubVoteCh)
     {
 
     let TodayVoteArray = []
+
+    //メッセ取得
     let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:30});
 
     for (const m of MsgCollection.values()) {
+        //メッセージの条件
+        //botかつ内容無しかつ今日送信されたメッセージ
         if(m.author.id == botID && m.content == "" && m.createdAt.getDay() == targetDay){
+
+            //リアクションされている全ての絵文字
+            const reactionEmojis = Array.from(m.reactions.cache.keys())
+            let emojis = []
+            for (const emoji of config.emojisForVoteReaction){
+                if(reactionEmojis.includes(emoji))emojis.push(emoji)
+            }
+
+            //リアクションされている全ての絵文字それぞれのユーザーを取得
             for (const emoji of emojis){
                 TodayVoteArray.push(m.reactions.cache.get(emoji).users.fetch()
                 .then(data => {
@@ -565,17 +581,28 @@ async function GetTodayVoteReaction(
 //週出欠のリアクション取得
 async function GetWeekVoteReaction(
     targetDay = new Date().getDay(),
-    channel=myChannels.WeekVoteCh,
-    emojis = config.emojisForVoteReaction)
+    channel = myChannels.WeekVoteCh)
     {
 
     let weekVoteArray = []
+    //埋め込みメッセージのタイトル
     let days = ["日","月","火","水","木","金","土"]
     let titleName = days[targetDay]
+
+    //メッセージ取得
     let MsgCollection = await client.channels.cache.get(channel).messages.fetch({limit:5});
 
     for (const m of MsgCollection.values()) {
+        //メッセージの条件
+        //botかつ埋め込みタイトルが条件に一致
         if(m.author.id == botID && m.embeds[0].title == titleName){
+            //リアクションされているすべての絵文字
+            const reactionEmojis = Array.from(m.reactions.cache.keys())
+            let emojis = []
+            for (const emoji of config.emojisForVoteReaction){
+                if(reactionEmojis.includes(emoji))emojis.push(emoji)
+            }
+
             for (const emoji of emojis){
                 weekVoteArray.push(m.reactions.cache.get(emoji).users.fetch()
                 .then(data => {
