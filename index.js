@@ -159,10 +159,10 @@ http.createServer(function(req, res){
 cron.schedule(config.VoteTime,async ()=>{
     //今日がオフじゃないなら出欠確認を出す
     let embed;
-    if(await isMatchDay()){
+    let matchday = await isMatchDay() 
+    if(matchday){
         let title = "公式戦出欠"
-        let description = 
-        `未回答の人は回答お願いします！\n<#${myChannels.WeekVoteCh}>`
+        let description = matchday
 
         embed = new EmbedBuilder()
         .setTitle(title)
@@ -183,8 +183,7 @@ cron.schedule(config.VoteTime,async ()=>{
 //cron:プロクラブ出欠追跡メッセージ送信
 cron.schedule(config.TrackerTime,async ()=>{
     //今日がオフじゃないなら
-    let booleanMatchDay = await isMatchDay()
-    if(!isOff() && !booleanMatchDay){
+    if(!isOff()){
         SendTrackerText(myChannels.ProClubVoteCh, myChannels.ProClubVoteCh)
         console.log("sent TrackerMessage")
     }
@@ -192,8 +191,7 @@ cron.schedule(config.TrackerTime,async ()=>{
 
 //cron:プロクラブ出欠追跡テキスト更新
 cron.schedule(config.UpdateTime,async ()=>{
-    let booleanMatchDay = await isMatchDay()
-    if(!isOff() && !booleanMatchDay) UpdateTrackerText(myChannels.ProClubVoteCh);
+    if(!isOff()) UpdateTrackerText(myChannels.ProClubVoteCh);
 });
 
 //cron:全員回答完了か判定
