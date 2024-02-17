@@ -713,13 +713,18 @@ function GetTrackerText(userIdEachReactionList){
     let text = "Tracker"
     
     //答えた人
-    let userIdAlreadyAnsweredList = [...userIdEachReactionList[0],...userIdEachReactionList[1]]
-  
+    let all = []
+    for(const erl of userIdEachReactionList){
+        all = all.concat(erl)
+    }
+    let set = new Set(all)
+    let userIdAlreadyAnsweredList = Array.from(set)
+
     //答えてない人
     let userIdNotAnsweredList = MemberList.filter(id => !userIdAlreadyAnsweredList.includes(id)) //未回答の人（固定のみ）
     
-    let maru  = userIdEachReactionList[0].filter(id=>MemberList.includes(id))
-    let smaru = userIdEachReactionList[0].filter(id=>SMemberList.includes(id))
+    let maru  = userIdEachReactionList[0]
+    let batu = userIdEachReactionList[1]
 
     //判定用
     let fieldNum = maru.length
@@ -734,52 +739,55 @@ function GetTrackerText(userIdEachReactionList){
     let text3 = "❌:"
 
     //まるの人
-    if(userIdEachReactionList[0].length > 0){
-        for (let id of userIdEachReactionList[0]){
-            for (let mem of Members){
-                if(id == mem.id){
-                    if(!mem.support){
-                        text1 += mem.name+" "
-                    }else{
-                        text1 += mem.name+"(ｻﾎﾟ) "
-                    }
-                    break
-                }
-            }
-        }
-    }
-    //未回答の人
-    if(userIdNotAnsweredList.length>0){
-        for (let id of userIdNotAnsweredList){
-            for (let mem of Members){
-                if(id == mem.id){
-                    text2 += mem.name+" "
-                    break
-                }
-            }
-        }
-    }
-    //×の人
-    if(userIdEachReactionList[1].length>0){
-        for (let id of userIdEachReactionList[1]){
-            for (let mem of Members){
-                if(id == mem.id){
-                    if(!mem.support){
-                        text3 += mem.name+" "
-                    }else{
-                        text3 += mem.name+"(ｻﾎﾟ) "
-                    }
-                    break
-                }
+    for (let id of maru){
+        for (let mem of Members){
+            if(id == mem.id){
+                text1 += mem.name+" "
+                break
             }
         }
     }
 
-    text += `:[${Hour}:${Min}:${Sec}時点の人数]\n**フィールド${fieldNum+smaru.length}人・GK${GkNum}人\n未回答${userIdNotAnsweredList.length}人**`
-    if(fieldNum+smaru.length>=8){text+="\n**活動確定**"}
-    else{
-        text+="\n活動未確定"
+    //途中参加
+    if(userIdEachReactionList.length == 3){
+        let delay = userIdEachReactionList[2]
+        fieldNum += delay.length
+        if (delay.includes(keeperId)){
+            fieldNum -= 1
+            GkNum = 1
+        }
+
+        for (let id of delay){
+            for (let mem of Members){
+                if(id == mem.id){
+                    text1 += mem.name+"(遅れ) "
+                    break
+                }
+            }
+        }
     }
+    
+    //×の人
+    for (let id of batu){
+        for (let mem of Members){
+            if(id == mem.id){
+                text3 += mem.name+" "
+                break
+            }
+        }
+    }
+    
+    //未回答の人
+    for (let id of userIdNotAnsweredList){
+        for (let mem of Members){
+            if(id == mem.id){
+                text2 += mem.name+" "
+                break
+            }
+        }
+    }
+    
+    text += `:[${Hour}:${Min}:${Sec}時点の人数]\n**フィールド${fieldNum}人・GK${GkNum}人\n未回答${userIdNotAnsweredList.length}人**`
     text += ("```" + text1 + "```")
     text += ("```" + text2 + "```")
     text += ("```" + text3 + "```")
