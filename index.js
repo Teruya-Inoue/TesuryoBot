@@ -19,7 +19,7 @@ let leagueFixtureJson = require("./leagueFixture.json")
 
 //わかりやすく
 const Members = memberJson.members
-//手数料botのdiscordユーザーID
+//botのdiscordユーザーID
 const botID = "991590117036806234";
 
 //メンバーリスト
@@ -64,16 +64,12 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate,async (message) =>{
     //プロクラブ出欠確認用
     //リアクションしやすいように選択肢でリアクション
-    let booleanMatchDay = await isMatchDay() 
-
     if(message.author.id == botID 
         && message.content == "" 
-        && message.channelId == myChannels.ProClubVoteCh
-        && !isOff() 
-        && !booleanMatchDay){
+        && message.channelId == myChannels.ProClubVoteCh){
         message.react("⭕");
         message.react("❌");
-        console.log("react to attendance voting by all choices of emoji")
+        if(await isMatchDay())message.react("🚫")
         return;
     }
     
@@ -94,7 +90,6 @@ client.on(Events.MessageCreate,async (message) =>{
                 .setColor(m.embeds[0].color)
                 m.edit({embeds:[exampleEmbed]})
                 await m.react("🚫")
-                await m.react("❓")
             }
         }
     }
@@ -294,13 +289,16 @@ cron.schedule(config.confirmTime,async ()=>{
 //cron:回答リマインダー
 cron.schedule(config.reminderTime,async () =>{
     //オフじゃないなら
-    let booleanMatchDay = await isMatchDay()
-    if(!isOff() && !booleanMatchDay){
+    if(!isOff()){
         let flag = await BooleanJudgeMessageExist(5)
         if(!flag){
             let arr = await GetAllTodayVoteReaction()
-
-            let ans = [...arr[0],...arr[1]]
+            let all = []
+            for(const erl of arr){
+                all = all.concat(erl)
+            }
+            let set = new Set(all)
+            let ans = Array.from(set)
             let notAns = MemberList.filter(id => !ans.includes(id))
 
             if(notAns.length>0){
@@ -475,7 +473,7 @@ async function isMatchDay(){
         try {
             if(m.embeds[0].title == days[nowday]){
                 if(m.embeds[0].description != null ){
-                    return true
+                    return m.embeds[0].description
                 }else{
                     return false
                 }
