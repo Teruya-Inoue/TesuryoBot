@@ -164,20 +164,8 @@ http.createServer(function(req, res){
 cron.schedule(config.VoteTime,async ()=>{
     //今日がオフじゃないなら出欠確認を出す
     let embed;
-
-    if(isOff()){
-        let title = "今日はオフ"
-        let description = 
-        `あらかじめ出欠がわかる日は<#${myChannels.WeekVoteCh}>へ。
-        付けたリアクションが<#${myChannels.ProClubVoteCh}>へ事前に反映されます。`
-
-        embed = new EmbedBuilder()
-        .setTitle(title)
-        .setDescription(description)
-        .setColor(0xff4500)
-
-    }else if(await isMatchDay()){
-        let title = "今日は公式戦"
+    if(await isMatchDay()){
+        let title = "公式戦出欠"
         let description = 
         `未回答の人は回答お願いします！\n<#${myChannels.WeekVoteCh}>`
 
@@ -187,15 +175,14 @@ cron.schedule(config.VoteTime,async ()=>{
         .setColor(0xff4500)
     }
     else{
-        let title = "プロクラブ参加"
-        let description = "⭕ : できる\n❌ : できない\n20時までにわからない・待ってほしい場合は <#1004623298107281409>に連絡を"
+        let title = "練習出欠"
+        let description = "⭕ : できる\n❌ : できない\n既に出欠がわかる日は<#1138445755619758150>へ\n20時までに不明な場合は<#1004623298107281409>に連絡"
         embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(description)
         .setColor(0xff4500)
     }
     client.channels.cache.get(myChannels.ProClubVoteCh).send({embeds:[embed]});
-    console.log("sent ProClubVoteMessage")
 });
 
 //cron:プロクラブ出欠追跡メッセージ送信
@@ -804,12 +791,12 @@ async function SendTrackerText(VoteCh,SendCh){
 
 // テキスト更新
 async function UpdateTrackerText(VoteCh){
-    let flag =false;
+    let flag = false;
     //メッセコレクションの取得
     let MsgCollection = await GetTargetMessage(VoteCh, 10);
     //投票メッセを探す
     for (const m of MsgCollection.values()) {
-        if(m.author.id==botID && m.content == "" && m.createdAt.getDay() == new Date().getDay()){
+        if(m.author.id == botID && m.content == "" && m.createdAt.getDay() == new Date().getDay()){
             flag = true
             break
         }
