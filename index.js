@@ -279,7 +279,6 @@ cron.schedule(config.confirmTime,async ()=>{
                 if( keeperNum == 0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send({content:text2,components:[br]});
             }
-            getPosition()
         }
     }
 });
@@ -367,7 +366,6 @@ cron.schedule(config.JudgeTime,async ()=>{
                 if(keeperNum ==0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
             }
-            getPosition()
 
         //8人いない
         }else{
@@ -386,7 +384,6 @@ cron.schedule(config.JudgeTime,async ()=>{
                 if(keeperNum ==0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
             }
-            getPosition()
         }
     }
 })
@@ -632,7 +629,8 @@ async function getPosition(targetDay = new Date().getDay()){
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
     for(let i = 0 ; i < 7 ; i++){
-        if(!config.offDay.includes(i) && await isMatchDay(i)){
+        let isMatch = await isMatchDay(i)
+        if(!config.offDay.includes(i) && !isMatch){
             let reactionList;
             if(i <= nowday){
                 reactionList = await GetAllTodayVoteReaction(targetDay = i)
@@ -642,36 +640,13 @@ async function getPosition(targetDay = new Date().getDay()){
             let maru = reactionList[0]
             for (const id of maru){
                 try {
-                    schedule[id][days[i]] = 1
+                    scheduleJson.schedule[id][days[i]] = 1
                 } catch (error) {
                     console.log(error)
                 }
             }
-        }
-    }
-
-
-    scheduleJson.schedule = await GetSchedule(scheduleJson.schedule)
-
-    //試合日は外す
-    let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
-    for (const m of MsgCollection.values()){
-        try {
-            if( m.embeds[0].description != null){
-                if(m.embeds[0].title == "月"){
-                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Mon" })
-                }else if(m.embeds[0].title == "火"){
-                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Tue" })
-                }else if(m.embeds[0].title == "水"){
-                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Wed" })
-                }else if(m.embeds[0].title == "木"){
-                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Thu" })
-                }else if(m.embeds[0].title == "金"){
-                    scheduleJson.days = scheduleJson.days.filter(d =>{ return d !="Fri" })
-                }
-            }
-        } catch (error) {
-            console.log(error)
+        }else{
+            scheduleJson.days = scheduleJson.days.filter(d =>{ return d !=days[i] })
         }
     }
 
