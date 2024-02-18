@@ -463,10 +463,10 @@ function isOff(){
 }
 
 //試合日か判定
-async function isMatchDay(){
+async function isMatchDay(targetDay = new Date().getDay()){
     let MsgCollection = await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:5});
     let days = ["日","月","火","水","木","金","土"]
-    let nowday = new Date().getDay()
+    let nowday = targetDay
     for (const m of MsgCollection.values()){
         try {
             if(m.embeds[0].title == days[nowday]){
@@ -480,6 +480,7 @@ async function isMatchDay(){
             console.log(error)
         }
     }
+    return false
 }
 
 // 指定のユーザー、内容、チャンネルから最新n個メッセージをとってくる
@@ -604,10 +605,10 @@ async function GetSchedule(schedule){
     let nowday = new Date().getDay()
     let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
-    for(let i = 0;i<7;i++){
+    for(let i = 0 ; i < 7 ; i++){
         if(!config.offDay.includes(i)){
             let voteReactionForEachReactionAtDayList;
-            if(i<=nowday){
+            if(i <= nowday){
                 voteReactionForEachReactionAtDayList = await GetAllTodayVoteReaction(targetDay = i)
             }else if(nowday<i){
                 voteReactionForEachReactionAtDayList = await GetWeekVoteReaction(targetDay=i)
@@ -626,6 +627,30 @@ async function GetSchedule(schedule){
 
 //ポジション取得
 async function getPosition(targetDay = new Date().getDay()){
+
+    let nowday = new Date().getDay()
+    const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+
+    for(let i = 0 ; i < 7 ; i++){
+        if(!config.offDay.includes(i) && await isMatchDay(i)){
+            let reactionList;
+            if(i <= nowday){
+                reactionList = await GetAllTodayVoteReaction(targetDay = i)
+            }else if(nowday < i){
+                reactionList = await GetWeekVoteReaction(targetDay=i)
+            }
+            let maru = reactionList[0]
+            for (const id of maru){
+                try {
+                    schedule[id][days[i]] = 1
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+    }
+
+
     scheduleJson.schedule = await GetSchedule(scheduleJson.schedule)
 
     //試合日は外す
@@ -658,8 +683,6 @@ async function getPosition(targetDay = new Date().getDay()){
         json: scheduleJson
     };
     
-    const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-
     request.post(options, function(error, response, body){
         let result = "今日のメンバー\nメンバーは確定・ポジは参考までに\n"
         if(config.offDay.includes(targetDay)){
