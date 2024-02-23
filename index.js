@@ -169,7 +169,7 @@ cron.schedule(config.VoteTime,async ()=>{
         .setDescription(description)
         .setColor(0xff4500)
     }
-    else{
+    else if (!isOff()){
         let title = "練習出欠"
         let description = "⭕ : できる\n❌ : できない\n既に出欠がわかる日は<#1138445755619758150>へ\n20時までに不明な場合は<#1004623298107281409>に連絡"
         embed = new EmbedBuilder()
