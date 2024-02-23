@@ -411,7 +411,7 @@ cron.schedule(config.WeekVoteResetTime,async ()=>{
 
     for (const m of MsgCollection.values()){
         await m.reactions.removeAll();
-        for (let emoji of config.emojisForVoteReaction) await m.react(emoji)
+        for (let emoji of ["⭕","❌"]) await m.react(emoji)
 
         try {
             let defaultEmbed = new EmbedBuilder()
