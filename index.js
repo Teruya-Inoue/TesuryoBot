@@ -171,7 +171,7 @@ cron.schedule(config.VoteTime,async ()=>{
     }
     else if (!isOff()){
         let title = "練習出欠"
-        let description = "⭕ : できる\n❌ : できない\n既に出欠がわかる日は<#1138445755619758150>へ\n20時までに不明な場合は<#1004623298107281409>に連絡"
+        let description = "⭕ : できる\n❌ : できない\n既に出欠がわかる日は<#1138445755619758150>へ\n20時までに不明な場合は<#1229368831256821802>に連絡"
         embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(description)
@@ -263,7 +263,7 @@ cron.schedule(config.confirmTime,async ()=>{
                 text += `フィールド${fieldNum}人集まりました!\n**22:30から活動!**\n`
             }
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
-
+            /*
             //ゲス募内容送信
             if(10 > fieldNum | keeperNum == 0){
                 const button = new ButtonBuilder()
@@ -279,6 +279,7 @@ cron.schedule(config.confirmTime,async ()=>{
                 if( keeperNum == 0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send({content:text2,components:[br]});
             }
+            */
         }
     }
 });
@@ -356,7 +357,7 @@ cron.schedule(config.JudgeTime,async ()=>{
             text += `全員回答完了していませんが、フィールド${fieldNum}人集まってるので活動ありです！\n`
             text += "**22:30から活動!**\n"
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text)
-
+            /*
             if(10 > fieldNum | keeperNum==0){
                 let text2 = "@週担当 "
 
@@ -366,7 +367,8 @@ cron.schedule(config.JudgeTime,async ()=>{
                 if(keeperNum ==0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
             }
-
+            */
+        
         //8人いない
         }else{
             text += `全員回答完了していませんが、`
@@ -374,7 +376,7 @@ cron.schedule(config.JudgeTime,async ()=>{
             text +=`の中から${config.minPlayer - fieldNum}人⭕なら活動アリです！\n回答したら何か連絡ください。\n`
             text += "活動ありなら**22:30から活動予定**\n"
             client.channels.cache.get(myChannels.ProClubVoteCh).send(text)
-
+            /*
             if(10 > fieldNum | keeperNum==0){
                 let text2 = "@週担当 "
                     
@@ -384,10 +386,11 @@ cron.schedule(config.JudgeTime,async ()=>{
                 if(keeperNum ==0) text2+= " **GK**"
                 client.channels.cache.get(myChannels.ProClubVoteCh).send(text2)
             }
+            */
         }
     }
 })
-
+/*
 //cron:ゲスト管理
 cron.schedule(config.GuestManagerTime,()=>{
     let arr = GetGuestManager()
@@ -396,6 +399,7 @@ cron.schedule(config.GuestManagerTime,()=>{
     client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
 
 })
+*/
 
 //cron:週出欠リアクションリセット
 cron.schedule(config.WeekVoteResetTime,async ()=>{
