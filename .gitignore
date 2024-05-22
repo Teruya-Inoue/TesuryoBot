@@ -111,3 +111,4 @@ scheduleConfig.json
 4222.json
 .gitignore
 deploy-commands.js
+sctest.js
