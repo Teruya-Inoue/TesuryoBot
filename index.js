@@ -63,19 +63,6 @@ const client = new Client({
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Ready");
-  const apiService = new EAFCApiService();
-  const leagueMatch = await apiService.matchesStats({
-    platform: "common-gen5",
-    clubIds: "136886",
-    matchType: "leagueMatch",
-  });
-  const playoffMatch = await apiService.matchesStats({
-    platform: "common-gen5",
-    clubIds: "136886",
-    matchType: "playoffMatch",
-  });
-  const match = [...leagueMatch, ...playoffMatch];
-  fs.writeFileSync("db/match.json", JSON.stringify(match));
 });
 
 //メッセージを受け取ったときの挙動
