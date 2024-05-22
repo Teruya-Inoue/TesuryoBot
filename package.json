@@ -7,20 +7,15 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "axios": "^1.6.8",
     "child_process": "^1.0.2",
     "discord.js": "^14.1.2",
     "eafc-clubs-api": "^1.2.0",
     "express": "^4.17.1",
     "node-cron": "^3.0.1",
-    "node-fetch": "^3.3.2",
-    "request": "^2.88.2",
-    "request-promise-native": "^0.0.0",
-    "uuid": "^8.3.2",
-    "xmlhttprequest": "^1.8.0"
+    "uuid": "^8.3.2"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "repository": {
     "url": "https://github.com/Teruya-Inoue/TesuryoBot"

@@ -9,7 +9,6 @@ const {
 const { Collection } = require("@discordjs/collection");
 const { EAFCApiService } = require("eafc-clubs-api");
 const fs = require("fs");
-const fetch = require("node-fetch");
 
 const http = require("http");
 const cron = require("node-cron");
