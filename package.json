@@ -13,6 +13,7 @@
     "eafc-clubs-api": "^1.2.0",
     "express": "^4.17.1",
     "node-cron": "^3.0.1",
+    "node-fetch": "^3.3.2",
     "request": "^2.88.2",
     "request-promise-native": "^0.0.0",
     "uuid": "^8.3.2",

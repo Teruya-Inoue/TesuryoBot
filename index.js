@@ -7,13 +7,14 @@ const {
   Partials,
 } = require("discord.js");
 const { Collection } = require("@discordjs/collection");
+const { EAFCApiService } = require("eafc-clubs-api");
+const fs = require("fs");
+const fetch = require("node-fetch");
 
 const http = require("http");
-const request = require("request");
 const cron = require("node-cron");
 const config = require("./config.json");
 const memberJson = require("./member.json");
-let scheduleJson = require("./scheduleConfig.json");
 let leagueFixtureJson = require("./leagueFixture.json");
 
 //わかりやすく
@@ -63,6 +64,19 @@ const client = new Client({
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Ready");
+  const apiService = new EAFCApiService();
+  const leagueMatch = await apiService.matchesStats({
+    platform: "common-gen5",
+    clubIds: "136886",
+    matchType: "leagueMatch",
+  });
+  const playoffMatch = await apiService.matchesStats({
+    platform: "common-gen5",
+    clubIds: "136886",
+    matchType: "playoffMatch",
+  });
+  const match = [...leagueMatch, ...playoffMatch];
+  fs.writeFileSync("db/match.json", JSON.stringify(match));
 });
 
 //メッセージを受け取ったときの挙動
