@@ -5,16 +5,18 @@ const {
   EmbedBuilder,
   Events,
   Partials,
+  Collection,
 } = require("discord.js");
-const { Collection } = require("@discordjs/collection");
-const { EAFCApiService } = require("eafc-clubs-api");
 const fs = require("fs");
+const path = require("path");
+const { spawn } = require("child_process");
+const { EAFCApiService } = require("eafc-clubs-api");
 
 const http = require("http");
 const cron = require("node-cron");
 const config = require("./config.json");
-const memberJson = require("./member.json");
-let leagueFixtureJson = require("./leagueFixture.json");
+const memberJson = require("./db/member.json");
+let leagueFixtureJson = require("./db/leagueFixture.json");
 
 //わかりやすく
 const Members = memberJson.members;
@@ -60,9 +62,54 @@ const client = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, "commands");
+const commandFiles = fs
+  .readdirSync(commandsPath)
+  .filter((file) => file.endsWith(".js"));
+
+for (const file of commandFiles) {
+  const filePath = path.join(commandsPath, file);
+  const command = require(filePath);
+  // Set a new item in the Collection with the key as the command name and the value as the exported module
+  if ("data" in command && "execute" in command) {
+    client.commands.set(command.data.name, command);
+  } else {
+    console.log(
+      `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+    );
+  }
+}
+
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Ready");
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+  const command = interaction.client.commands.get(interaction.commandName);
+  if (!command) {
+    console.error(`No command matching ${interaction.commandName} was found.`);
+    return;
+  }
+
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({
+        content: "There was an error while executing this command!",
+        ephemeral: true,
+      });
+    } else {
+      await interaction.reply({
+        content: "There was an error while executing this command!",
+        ephemeral: true,
+      });
+    }
+  }
 });
 
 //メッセージを受け取ったときの挙動
@@ -204,6 +251,39 @@ cron.schedule(config.TrackerTime, async () => {
 //cron:プロクラブ出欠追跡テキスト更新
 cron.schedule(config.UpdateTime, async () => {
   if (!isOff()) UpdateTrackerText(myChannels.ProClubVoteCh);
+});
+
+cron.schedule(config.GetMatchInfoTime, async () => {
+  console.log("取得開始");
+  const apiService = new EAFCApiService();
+  const leagueMatch = await apiService.matchesStats({
+    clubIds: "136886",
+    platform: "common-gen5",
+    matchType: "leagueMatch",
+  });
+  const playoffMatch = await apiService.matchesStats({
+    clubIds: "136886",
+    platform: "common-gen5",
+    matchType: "playoffMatch",
+  });
+  const matches = [...leagueMatch, ...playoffMatch];
+  fs.writeFileSync("db/match.json", JSON.stringify(matches));
+  console.log("書き込み完了");
+  // Pythonスクリプトのパス
+  const pythonScriptPath = "py/save_matchdata.py";
+
+  // Pythonプロセスを生成
+  const pythonProcess = spawn("python", [pythonScriptPath]);
+
+  // 標準エラー出力のデータを受信するイベントハンドラ
+  pythonProcess.stderr.on("data", (data) => {
+    console.error(`Pythonスクリプトからのエラー出力: ${data}`);
+  });
+
+  // Pythonプロセスの終了を待機
+  pythonProcess.on("close", (code) => {
+    console.log(`Pythonプロセスが終了しました。終了コード: ${code}`);
+  });
 });
 
 //cron:全員回答完了か判定
@@ -383,6 +463,12 @@ cron.schedule(config.GuestManagerTime,()=>{
 
 //cron:週出欠リアクションリセット
 cron.schedule(config.WeekVoteResetTime, async () => {
+  resetWeekVote();
+});
+
+//以下、便利関数
+
+async function resetWeekVote() {
   let MsgCollection = await client.channels.cache
     .get(myChannels.WeekVoteCh)
     .messages.fetch({ limit: 5 });
@@ -425,9 +511,7 @@ cron.schedule(config.WeekVoteResetTime, async () => {
       console.log(error);
     }
   }
-});
-
-//以下、便利関数
+}
 
 //オフの日判定
 function isOff() {
@@ -619,35 +703,6 @@ async function GetWeekVoteReaction(
     }
   }
   return Promise.all(weekVoteArray);
-}
-
-//週の予定取得
-async function GetSchedule(schedule) {
-  let nowday = new Date().getDay();
-  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  for (let i = 0; i < 7; i++) {
-    if (!config.offDay.includes(i)) {
-      let voteReactionForEachReactionAtDayList;
-      if (i <= nowday) {
-        voteReactionForEachReactionAtDayList = await GetAllTodayVoteReaction(
-          (targetDay = i)
-        );
-      } else if (nowday < i) {
-        voteReactionForEachReactionAtDayList = await GetWeekVoteReaction(
-          (targetDay = i)
-        );
-      }
-      for (const id of voteReactionForEachReactionAtDayList[0]) {
-        try {
-          schedule[id][days[i]] = 1;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-  }
-  return schedule;
 }
 
 //　ゲスト管理者計算
