@@ -43,7 +43,7 @@ module.exports = {
         return;
       }
       const newData =
-        data + `${name},${goals},${opponentsgoals},${unixTimestamp}`;
+        data + `${name},${goals},${opponentsgoals},${unixTimestamp}\n`;
       // ファイルに書き込む
       fs.writeFile(filePath, newData, "utf8", (err) => {
         if (err) {

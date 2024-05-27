@@ -115,7 +115,7 @@ for v in today_videos:
                    players=players,
                    opponents=result_thumbnail)
     
-    thumbnail_path = "output_image.jpg"
+    thumbnail_path = "db/output_image.jpg"
     # サムネイル画像をアップロード
     request = youtube.thumbnails().set(
         videoId=video_id,
@@ -125,7 +125,7 @@ for v in today_videos:
 
     # 配信者ごとに処理
     ## ソノ
-    if "手数料活動" in title:
+    if "手数料活動" in title or "ソノ" in title:
         # 動画情報更新
         new_title += " ソノ視点"
         request = youtube.videos().update(
@@ -186,7 +186,7 @@ for v in today_videos:
         response = request.execute()
 
     ## あゆれ
-    elif "FC24" in title:
+    elif "FC24" in title or "あゆれ" in title:
         # 動画情報更新
         new_title += " あゆれ視点"
         request = youtube.videos().update(
