@@ -89,6 +89,38 @@ for v in today_videos:
             })
             response = request.execute()
 
+            #全体再生リスト追加
+            request = youtube.playlistItems().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "playlistId": playlistId_all,
+                        "resourceId": {
+                            "kind": "youtube#video",
+                            "videoId": video_id
+                        }
+                    }
+                }
+            )
+            response = request.execute()
+
+                        
+            #全体再生リスト追加
+            request = youtube.playlistItems().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "playlistId": playlistId_sono,
+                        "resourceId": {
+                            "kind": "youtube#video",
+                            "videoId": video_id
+                        }
+                    }
+                }
+            )
+            response = request.execute()
+
+
     ## にし
     elif "にし" in title:
         # 動画情報更新
@@ -103,6 +135,36 @@ for v in today_videos:
                     "categoryId":"20"
                 }
             })
+            response = request.execute()
+            
+            #全体再生リスト追加
+            request = youtube.playlistItems().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "playlistId": playlistId_all,
+                        "resourceId": {
+                            "kind": "youtube#video",
+                            "videoId": video_id
+                        }
+                    }
+                }
+            )
+            response = request.execute()
+            
+            #全体再生リスト追加
+            request = youtube.playlistItems().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "playlistId": playlistId_nishi,
+                        "resourceId": {
+                            "kind": "youtube#video",
+                            "videoId": video_id
+                        }
+                    }
+                }
+            )
             response = request.execute()
 
 
@@ -120,5 +182,36 @@ for v in today_videos:
                     "categoryId":"20"
                 }
             })
+            response = request.execute()
+                        
+            #全体再生リスト追加
+            request = youtube.playlistItems().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "playlistId": playlistId_all,
+                        "resourceId": {
+                            "kind": "youtube#video",
+                            "videoId": video_id
+                        }
+                    }
+                }
+            )
+            response = request.execute()
+
+                        
+            #全体再生リスト追加
+            request = youtube.playlistItems().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "playlistId": playlistId_ayure,
+                        "resourceId": {
+                            "kind": "youtube#video",
+                            "videoId": video_id
+                        }
+                    }
+                }
+            )
             response = request.execute()
 

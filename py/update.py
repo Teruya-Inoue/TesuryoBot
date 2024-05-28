@@ -60,21 +60,6 @@ for v in today_videos:
     video_id = v["snippet"]["resourceId"]["videoId"]
     print("https://www.youtube.com/watch?v={}".format(video_id))
 
-    #全体再生リスト追加
-    request = youtube.playlistItems().insert(
-        part="snippet",
-        body={
-            "snippet": {
-                "playlistId": playlistId_all,
-                "resourceId": {
-                    "kind": "youtube#video",
-                    "videoId": video_id
-                }
-            }
-        }
-    )
-    response = request.execute()
-
     #動画情報取得
     video_response = youtube.videos().list(
         part='snippet',  # 取得する部分（snippetは基本的な動画情報）
@@ -140,21 +125,6 @@ for v in today_videos:
         })
         response = request.execute()
 
-        # 個人再生リストの追加
-        request = youtube.playlistItems().insert(
-        part="snippet",
-        body={
-            "snippet": {
-                "playlistId": playlistId_sono,
-                "resourceId": {
-                    "kind": "youtube#video",
-                    "videoId": video_id
-                }
-            }
-        }
-        )
-        response = request.execute()
-
     ## にし
     elif "にし" in title:
         # 動画情報更新
@@ -171,20 +141,6 @@ for v in today_videos:
         })
         response = request.execute()
 
-        # 個人再生リストの追加
-        request = youtube.playlistItems().insert(
-        part="snippet",
-        body={
-            "snippet": {
-                "playlistId": playlistId_nishi,
-                "resourceId": {
-                    "kind": "youtube#video",
-                    "videoId": video_id
-                }
-            }
-        })
-        response = request.execute()
-
     ## あゆれ
     elif "FC24" in title or "あゆれ" in title:
         # 動画情報更新
@@ -197,20 +153,6 @@ for v in today_videos:
                 "title": new_title,
                 "description": description,
                 "categoryId":"20"
-            }
-        })
-        response = request.execute()
-        
-        # 個人再生リストの追加
-        request = youtube.playlistItems().insert(
-        part="snippet",
-        body={
-            "snippet": {
-                "playlistId": playlistId_ayure,
-                "resourceId": {
-                    "kind": "youtube#video",
-                    "videoId": video_id
-                }
             }
         })
         response = request.execute()
