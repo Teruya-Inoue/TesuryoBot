@@ -75,7 +75,7 @@ module.exports = {
       const jstOffset = 9 * 60 * 60 * 1000;
 
       // UNIXタイムスタンプ（ミリ秒）からタイムゾーンオフセットを引いてUTCに変換します。
-      const unixTimestampInMilliseconds = date.getTime() - jstOffset;
+      const unixTimestampInMilliseconds = date.getTime();
 
       // UNIXタイムスタンプを秒単位で返します。
       unixTimestamp = Math.floor(unixTimestampInMilliseconds / 1000);
