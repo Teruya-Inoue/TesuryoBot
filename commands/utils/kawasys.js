@@ -275,7 +275,7 @@ module.exports = {
     // Pong!と返信
     await interaction.deferReply({ ephemeral: true });
 
-    const roles = interaction.user.id.cache;
+    const roles = interaction.member.roles.cache;
     const hasFounderRole = roles.some((role) => role.name === "founder");
 
     // "founder" ロールを持っていない場合は処理を中断
