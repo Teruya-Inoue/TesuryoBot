@@ -324,7 +324,7 @@ module.exports = {
     });
 
     await interaction.editReply({
-      content: `あなたの投票内容\nST:${st}\n,LF:${lf}\n,RF:${rf}\n,LCM:${lcm}\n,CM:${cm}\n,RCM:${rcm}\n,LB:${lb}\n,LCB:${lcb}\n,RCB:${rcb}\n,RB:${rb}\n,GK:${gk}\n`,
+      content: `あなたの投票内容\nST:${st}\nLF:${lf}\nRF:${rf}\nLCM:${lcm}\nCM:${cm}\nRCM:${rcm}\nLB:${lb}\nLCB:${lcb}\nRCB:${rcb}\nRB:${rb}\nGK:${gk}\n`,
       ephemeral: true,
     });
   },
