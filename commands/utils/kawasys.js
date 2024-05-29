@@ -4,9 +4,9 @@ const fs = require("fs");
 module.exports = {
   data: new SlashCommandBuilder()
     // コマンドの名前
-    .setName("add4321")
+    .setName("kawasys")
     // コマンドの説明文
-    .setDescription("DBに今日の4321メンバーを登録します")
+    .setDescription("For Founder")
     //st
     .addStringOption((option) =>
       option
@@ -27,8 +27,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -52,8 +51,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -77,8 +75,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -102,8 +99,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -127,8 +123,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -152,8 +147,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -177,8 +171,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -202,8 +195,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -227,8 +219,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -252,8 +243,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     )
@@ -277,8 +267,7 @@ module.exports = {
           { name: "ぽりょり", value: "ぽりょり" },
           { name: "りんりん", value: "りんりん" },
           { name: "ヤヤ", value: "ヤヤ" },
-          { name: "ゲスト", value: "ゲスト" },
-          { name: "COM", value: "COM" }
+          { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
     ),
@@ -286,6 +275,19 @@ module.exports = {
     // Pong!と返信
     await interaction.deferReply({ ephemeral: true });
 
+    const roles = interaction.user.id.cache;
+    const hasFounderRole = roles.some((role) => role.name === "founder");
+
+    // "founder" ロールを持っていない場合は処理を中断
+    if (!hasFounderRole) {
+      await interaction.editReply({
+        content: "このコマンドを使用するにはfounder ロールが必要です。",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const userId = interaction.user.id;
     const st = interaction.options.getString("st");
     const lf = interaction.options.getString("lf");
     const rf = interaction.options.getString("rf");
@@ -298,34 +300,31 @@ module.exports = {
     const rb = interaction.options.getString("rb");
     const gk = interaction.options.getString("gk");
 
-    const data = {
-      ST: st,
-      LF: lf,
-      RF: rf,
-      LCM: lcm,
-      CM: cm,
-      RCM: rcm,
-      LB: lb,
-      LCB: lcb,
-      RCB: rcb,
-      RB: rb,
-      GK: gk,
-    };
+    data = `${userId},${st},${lf},${rf},${lcm},${cm},${rcm},${lb},${lcb},${rcb},${rb},${gk}\n`;
 
-    // JSON形式に変換
-    const jsonData = JSON.stringify(data, null, 2);
+    const filePath = "db/kawasys.csv";
 
-    // ファイルに保存
-    fs.writeFile("db/4321.json", jsonData, (err) => {
+    fs.readFile(filePath, "utf8", (err, data) => {
       if (err) {
-        console.error("Error writing file:", err);
-      } else {
-        console.log("File has been saved.");
+        console.error("ファイルの読み込み中にエラーが発生しました:", err);
+        return;
       }
+      const newData =
+        data +
+        `${userId},${st},${lf},${rf},${lcm},${cm},${rcm},${lb},${lcb},${rcb},${rb},${gk}\n`;
+      // ファイルに書き込む
+      fs.writeFile(filePath, newData, "utf8", (err) => {
+        if (err) {
+          console.error("ファイルの書き込み中にエラーが発生しました:", err);
+          return;
+        }
+
+        console.log("ファイルの更新が完了しました。");
+      });
     });
 
     await interaction.editReply({
-      content: "書き込み完了",
+      content: `あなたの投票内容\nST:${st}\n,LF:${lf}\n,RF:${rf}\n,LCM:${lcm}\n,CM:${cm}\n,RCM:${rcm}\n,LB:${lb}\n,LCB:${lcb}\n,RCB:${rcb}\n,RB:${rb}\n,GK:${gk}\n`,
       ephemeral: true,
     });
   },
