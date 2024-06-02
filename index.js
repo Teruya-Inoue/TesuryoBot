@@ -28,7 +28,6 @@ const MemberIdList = []; //アクティブメンバーID
 const SMemberIdList = []; //サポメンID
 const MemberNameList = []; //アクティブメンバーの名前
 const SMemberNameList = []; //サポメンの名前
-const gusetManagerList = memberJson.guestmanager;
 
 let keeperId = "";
 
@@ -86,7 +85,7 @@ for (let pathname of ["commands/utils", "commands/admin"]) {
 
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
-  console.log("Ready");
+  console.log("Botの準備が完了しました");
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -230,16 +229,19 @@ cron.schedule(config.VoteTime, async () => {
       .setTitle(title)
       .setDescription(description)
       .setColor(0xff4500);
-  } else if (!isOff()) {
+  } else {
     let title = "練習出欠";
     let description =
-      "⭕ : 出席\n❌ : 欠席\n事前に出欠がわかる日は<#1138445755619758150>へ\n20時までに出せない場合は<#1229368831256821802>に連絡しよう";
+      "⭕ : 出席\n❌ : 欠席\n事前に出欠がわかる日は<#1138445755619758150>へ\n報連相は<#1004308042009038848>へ";
     embed = new EmbedBuilder()
       .setTitle(title)
       .setDescription(description)
       .setColor(0xff4500);
   }
-  client.channels.cache.get(myChannels.ProClubVoteCh).send({ embeds: [embed] });
+  if (!isOff())
+    client.channels.cache
+      .get(myChannels.ProClubVoteCh)
+      .send({ embeds: [embed] });
 });
 
 //cron:プロクラブ出欠追跡メッセージ送信
@@ -256,8 +258,8 @@ cron.schedule(config.UpdateTime, async () => {
   if (!isOff()) UpdateTrackerText(myChannels.ProClubVoteCh);
 });
 
+//cron:試合情報取得
 cron.schedule(config.GetMatchInfoTime, async () => {
-  console.log("取得開始");
   const apiService = new EAFCApiService();
   const leagueMatch = await apiService.matchesStats({
     clubIds: "136886",
@@ -280,12 +282,12 @@ cron.schedule(config.GetMatchInfoTime, async () => {
 
   // 標準エラー出力のデータを受信するイベントハンドラ
   pythonProcess.stderr.on("data", (data) => {
-    console.error(`Pythonスクリプトからのエラー出力: ${data}`);
+    console.error(`save_matchdata.pyからのエラー出力: ${data}`);
   });
 
   // Pythonプロセスの終了を待機
   pythonProcess.on("close", (code) => {
-    console.log(`Pythonプロセスが終了しました。終了コード: ${code}`);
+    console.log(`save_matchdata.pyが終了しました。終了コード: ${code}`);
   });
 });
 
@@ -329,7 +331,6 @@ cron.schedule(config.confirmTime, async () => {
     }
 
     //ゲスト管理者
-    let gm = GetGuestManager();
     let text = "";
 
     if (judgeNum < config.minPlayer) {
@@ -364,7 +365,8 @@ cron.schedule(config.confirmTime, async () => {
 //cron:回答リマインダー
 cron.schedule(config.reminderTime, async () => {
   //オフじゃないなら
-  if (!isOff()) {
+  let booleanMatchDay = await isMatchDay();
+  if (!isOff() && !booleanMatchDay) {
     let flag = await BooleanJudgeMessageExist(5);
     if (!flag) {
       let arr = await GetAllTodayVoteReaction();
@@ -424,7 +426,6 @@ cron.schedule(config.JudgeTime, async () => {
     }
 
     //ゲスト管理者
-    let gm = GetGuestManager();
     let text = "";
 
     //8人以上いる
@@ -453,16 +454,6 @@ cron.schedule(config.JudgeTime, async () => {
     }
   }
 });
-/*
-//cron:ゲスト管理
-cron.schedule(config.GuestManagerTime,()=>{
-    let arr = GetGuestManager()
-    let text = "今週の活動・ゲスト管理:"
-    for (let id of arr) text += `<@${id}> `;
-    client.channels.cache.get(myChannels.ProClubVoteCh).send(text);
-
-})
-*/
 
 //cron:週出欠リアクションリセット
 cron.schedule(config.WeekVoteResetTime, async () => {
@@ -470,7 +461,6 @@ cron.schedule(config.WeekVoteResetTime, async () => {
 });
 
 //以下、便利関数
-
 async function resetWeekVote() {
   let MsgCollection = await client.channels.cache
     .get(myChannels.WeekVoteCh)
@@ -706,16 +696,6 @@ async function GetWeekVoteReaction(
     }
   }
   return Promise.all(weekVoteArray);
-}
-
-//　ゲスト管理者計算
-function GetGuestManager() {
-  let day1 = new Date("2024/02/05");
-  let day2 = new Date();
-  let num =
-    (Math.floor((day2 - day1) / 86400000 / 7) * 2) % gusetManagerList.length;
-
-  return [gusetManagerList[num], gusetManagerList[num + 1]];
 }
 
 // トラッカーのテキスト取得
