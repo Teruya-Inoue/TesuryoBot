@@ -48,7 +48,7 @@ for v in videos:
     video_datetime = datetime.datetime.fromisoformat(v["snippet"]["publishedAt"].replace("Z", "+00:00"))
     time_diff = abs(current_datetime - video_datetime)
     date_diff = abs((current_datetime.date() - video_datetime.date()).days)
-    if time_diff <= datetime.timedelta(23) and date_diff <1:
+    if time_diff <= datetime.timedelta(3) and date_diff <1:
         today_videos.append(v)
 
 with open("db/4321.json", 'r',encoding="utf-8") as f:

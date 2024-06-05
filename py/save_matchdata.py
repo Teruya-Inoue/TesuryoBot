@@ -8,24 +8,6 @@ file_path = 'db/matchdata.csv'
 # CSVファイルを読み込む
 df = pd.read_csv(file_path)
 
-"""
-url_league = "https://proclubs.ea.com/api/fc/clubs/matches?platform=common-gen5&clubIds=136886&matchType=leagueMatch"
-url_playoff = "https://proclubs.ea.com/api/fc/clubs/matches?platform=common-gen5&clubIds=136886&matchType=playoffMatch"
-
-header = {
-    'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0',
-        'Accept':
-          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
-}
-response_league = requests.get(url_league,headers=header)
-response_playoff = requests.get(url_playoff,headers=header)
-leaguematch = json.loads(response_league.text)
-playoffmatch = json.loads(response_playoff.text)
-
-matches = leaguematch + playoffmatch
-"""
 # JSONファイルのパス
 json_path = 'db/match.json'
 

@@ -2,20 +2,24 @@ import datetime
 from PIL import Image, ImageDraw, ImageFont
 
 test_players = {
-    "ST":"ぐり",
+    "ST":"りんりん",
     "LF":"たかおみ",
-    "RF":"りんりん",
-    "LCM":"ヤヤ",
-    "CM":"たいが",
-    "RCM":"しーあーる",
-    "LB":"トクソ",
-    "LCB":"あゆれ",
+    "RF":"しーあーる",
+    "LCM":"だひょん",
+    "CM":"ゲスト",
+    "RCM":"ゲスト",
+    "LB":"あゆれ",
+    "LCB":"べや",
     "RCB":"くわがた",
     "RB":"にし",
-    "GK":"ソノ",
+    "GK":"ゲスト",
 }
 test_opponents = [
-    {"clubname":"test","goals":0,"opponentsgoals":0},
+    {"clubname":"FC ARDIMENTO","goals":1,"opponentsgoals":0},
+    {"clubname":"Principale","goals":3,"opponentsgoals":0},
+    {"clubname":"WELLDONE","goals":2,"opponentsgoals":3},
+    {"clubname":"FC ARDIMENTO","goals":6,"opponentsgoals":1},
+    {"clubname":"Club One","goals":3,"opponentsgoals":0},
 ]
 positions_4321 = {
     "ST":(957, 185),
@@ -75,4 +79,4 @@ def make_thumbnail(
     # 画像を保存
     image.save(output_image_path)
 
-make_thumbnail(title="2024/05/24 (Fri)",players=test_players,opponents=test_opponents)
+make_thumbnail(title="2024/05/16 (Thu)",players=test_players,opponents=test_opponents)
