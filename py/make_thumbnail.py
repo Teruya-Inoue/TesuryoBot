@@ -1,4 +1,3 @@
-import datetime
 from PIL import Image, ImageDraw, ImageFont
 
 test_players = {
