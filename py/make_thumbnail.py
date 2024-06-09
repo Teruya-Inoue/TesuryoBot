@@ -1,24 +1,23 @@
 from PIL import Image, ImageDraw, ImageFont
 
 test_players = {
-    "ST":"りんりん",
+    "ST":"ぐり",
     "LF":"たかおみ",
-    "RF":"しーあーる",
+    "RF":"りんりん",
     "LCM":"だひょん",
-    "CM":"ゲスト",
-    "RCM":"ゲスト",
-    "LB":"あゆれ",
-    "LCB":"べや",
+    "CM":"たいが",
+    "RCM":"しーあーる",
+    "LB":"べや",
+    "LCB":"あゆれ",
     "RCB":"くわがた",
     "RB":"にし",
-    "GK":"ゲスト",
+    "GK":"ソノ",
 }
 test_opponents = [
-    {"clubname":"FC ARDIMENTO","goals":1,"opponentsgoals":0},
-    {"clubname":"Principale","goals":3,"opponentsgoals":0},
-    {"clubname":"WELLDONE","goals":2,"opponentsgoals":3},
-    {"clubname":"FC ARDIMENTO","goals":6,"opponentsgoals":1},
-    {"clubname":"Club One","goals":3,"opponentsgoals":0},
+    {"clubname":"Ra VIRDY","goals":3,"opponentsgoals":3},
+    {"clubname":"Aplastar CF","goals":0,"opponentsgoals":0},
+    {"clubname":"Le Fort FC","goals":1,"opponentsgoals":0},
+    {"clubname":"WELLDONE","goals":1,"opponentsgoals":1},
 ]
 positions_4321 = {
     "ST":(957, 185),
@@ -78,4 +77,4 @@ def make_thumbnail(
     # 画像を保存
     image.save(output_image_path)
 
-make_thumbnail(title="2024/05/16 (Thu)",players=test_players,opponents=test_opponents)
+make_thumbnail(title="2024/06/07 (Fri)",players=test_players,opponents=test_opponents)
