@@ -1,10 +1,7 @@
 import json
 import datetime
-import pandas as pd
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-from make_thumbnail import make_thumbnail
 
 #プレイリスト
 playlistId_all = 'PLnJ5NkymnT04jtlp8W5LnTjeElu7pHbWk'
@@ -12,6 +9,12 @@ playlistId_noguest = 'PLnJ5NkymnT06vs1WoljJBNRMhHQvuPAJQ'
 playlistId_nishi = 'PLnJ5NkymnT07AScub7F8KMmGTmIpwSHYv'
 playlistId_sono = 'PLnJ5NkymnT07k4HjHqqDmtGH9N0NENgln'
 playlistId_ayure = 'PLnJ5NkymnT05x9I6gz3a0pTQi19tICKdd'
+
+playlist_dict = {
+    "ソノ":playlistId_sono,
+    "にし":playlistId_nishi,
+    "あゆれ":playlistId_ayure
+}
 
 # UTC現在時刻の取得
 current_datetime = datetime.datetime.now(datetime.timezone.utc)
@@ -42,41 +45,81 @@ while request:
     videos.extend(response["items"])
     request = youtube.playlistItems().list_next(request, response)
 
-# 今日の動画
-today_videos=[]
+video_dict ={
+    "ソノ":[],
+    "にし":[],
+    "あゆれ":[]
+}
+
 for v in videos:
+    #動画時刻
     video_datetime = datetime.datetime.fromisoformat(v["snippet"]["publishedAt"].replace("Z", "+00:00"))
+    #動画時刻と現在時刻の差
     time_diff = abs(current_datetime - video_datetime)
-    date_diff = abs((current_datetime.date() - video_datetime.date()).days)
-    if time_diff <= datetime.timedelta(3) and date_diff <1:
-        today_videos.append(v)
 
+    # 今日の動画
+    # 13時~16時以内(日本時間22時~25時以内)で現在時刻と23時間未満差ならば今日の動画
+    if 13<= video_datetime.hour <= 16 and time_diff < datetime.timedelta(hours=20):
+        video_id = v["snippet"]["resourceId"]["videoId"]
 
-# 動画ごとに処理
-for v in today_videos:
-    #id設定
-    video_id = v["snippet"]["resourceId"]["videoId"]
-    print("https://www.youtube.com/watch?v={}".format(video_id))
+        video_response = youtube.videos().list(
+            part='snippet',  # 取得する部分（snippetは基本的な動画情報）
+            id=video_id
+        ).execute()
 
-    #動画情報取得
-    video_response = youtube.videos().list(
-        part='snippet',  # 取得する部分（snippetは基本的な動画情報）
-        id=video_id
-    ).execute()
+        #情報
+        video_info = video_response['items'][0]['snippet']
+        title = video_info['title'] #元のタイトル
+        video_datetime = datetime.datetime.fromisoformat(video_info['publishedAt'].replace("Z","+00:00")) #投稿時間
 
-    # 動画の情報を表示
-    video_info = video_response['items'][0]['snippet']
-    title = video_info['title'] #元のタイトル
-    video_datetime = datetime.datetime.fromisoformat(video_info['publishedAt'].replace("Z","+00:00")) #投稿時間
-    video_timestamp = video_datetime.timestamp() #UNIXタイムスタンプ
-    new_title = video_datetime.strftime("%Y/%m/%d") #新しいタイトル
-    thumbnail_title = video_datetime.strftime("%Y/%m/%d (%a)")
+        #ソノ
+        if ("手数料活動" in title or "ソノ" in title) and ("e" not in title):
+            streamer = "ソノ"
+            if len(video_dict[streamer]) == 0:
+                video_dict[streamer].append({"videoId":video_id,"title":title,"datetime":video_datetime})
+            else:
+                for i in range(len(video_dict[streamer])):
+                    if video_datetime < video_dict[streamer][i]["datetime"]:
+                        video_dict[streamer].insert(i,{"videoId":video_id,"title":title,"datetime":video_datetime})
+                        break
 
-    # 配信者ごとに処理
-    ## ソノ
-    if "手数料活動" in title or "ソノ" in title:
-        # 動画情報更新
-        new_title += " ソノ視点"
+        #にし
+        elif ("にし" in title) and ("e" not in title):
+            streamer = "にし"
+            if len(video_dict[streamer]) == 0:
+                video_dict[streamer].append({"videoId":video_id,"title":title,"datetime":video_datetime})
+            else:
+                for i in range(len(video_dict[streamer])):
+                    if video_datetime < video_dict[streamer][i]["datetime"]:
+                        video_dict[streamer].insert(i,{"videoId":video_id,"title":title,"datetime":video_datetime})
+                        break
+        
+        #あゆれ
+        elif ("FC24" in title or "あゆれ" in title) and ("e" not in title):
+            streamer = "あゆれ"
+            if len(video_dict[streamer]) == 0:
+                video_dict[streamer].append({"videoId":video_id,"title":title,"datetime":video_datetime})
+            else:
+                for i in range(len(video_dict[streamer])):
+                    if video_datetime < video_dict[streamer][i]["datetime"]:
+                        video_dict[streamer].insert(i,{"videoId":video_id,"title":title,"datetime":video_datetime})
+                        break
+
+for streamer in video_dict.keys():
+    print(streamer)
+    for i in range(len(video_dict[streamer])):
+        index = i+1
+        d = video_dict[streamer][i]
+
+        video_id = d["videoId"]
+        title = d["title"]
+        video_datetime = d["datetime"]
+
+        new_title = "{} {}視点".format(video_datetime.strftime("%Y/%m/%d"),streamer)
+        if(index>1): 
+            new_title += str(index)
+        
+        print("{}:https://www.youtube.com/watch?v={}".format(index,video_id))
         if title != new_title:
             request = youtube.videos().update(
             part="snippet",
@@ -102,15 +145,14 @@ for v in today_videos:
                     }
                 }
             )
-            response = request.execute()
+            request.execute()
 
-                        
-            #全体再生リスト追加
+            #個人再生リスト追加
             request = youtube.playlistItems().insert(
                 part="snippet",
                 body={
                     "snippet": {
-                        "playlistId": playlistId_sono,
+                        "playlistId": playlist_dict[streamer],
                         "resourceId": {
                             "kind": "youtube#video",
                             "videoId": video_id
@@ -119,99 +161,3 @@ for v in today_videos:
                 }
             )
             response = request.execute()
-
-
-    ## にし
-    elif "にし" in title:
-        # 動画情報更新
-        new_title += " にし視点"
-        if title != new_title:
-            request = youtube.videos().update(
-            part="snippet",
-            body={
-                "id": video_id,
-                "snippet": {
-                    "title": new_title,
-                    "categoryId":"20"
-                }
-            })
-            response = request.execute()
-            
-            #全体再生リスト追加
-            request = youtube.playlistItems().insert(
-                part="snippet",
-                body={
-                    "snippet": {
-                        "playlistId": playlistId_all,
-                        "resourceId": {
-                            "kind": "youtube#video",
-                            "videoId": video_id
-                        }
-                    }
-                }
-            )
-            response = request.execute()
-            
-            #全体再生リスト追加
-            request = youtube.playlistItems().insert(
-                part="snippet",
-                body={
-                    "snippet": {
-                        "playlistId": playlistId_nishi,
-                        "resourceId": {
-                            "kind": "youtube#video",
-                            "videoId": video_id
-                        }
-                    }
-                }
-            )
-            response = request.execute()
-
-
-    ## あゆれ
-    elif "FC24" in title or "あゆれ" in title:
-        # 動画情報更新
-        new_title += " あゆれ視点"
-        if title != new_title:
-            request = youtube.videos().update(
-            part="snippet",
-            body={
-                "id": video_id,
-                "snippet": {
-                    "title": new_title,
-                    "categoryId":"20"
-                }
-            })
-            response = request.execute()
-                        
-            #全体再生リスト追加
-            request = youtube.playlistItems().insert(
-                part="snippet",
-                body={
-                    "snippet": {
-                        "playlistId": playlistId_all,
-                        "resourceId": {
-                            "kind": "youtube#video",
-                            "videoId": video_id
-                        }
-                    }
-                }
-            )
-            response = request.execute()
-
-                        
-            #全体再生リスト追加
-            request = youtube.playlistItems().insert(
-                part="snippet",
-                body={
-                    "snippet": {
-                        "playlistId": playlistId_ayure,
-                        "resourceId": {
-                            "kind": "youtube#video",
-                            "videoId": video_id
-                        }
-                    }
-                }
-            )
-            response = request.execute()
-

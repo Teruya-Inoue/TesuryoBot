@@ -53,4 +53,5 @@ for i in range(1,len(df)):
 
 # 重複行の削除
 df = df.drop(to_drop)
+df = df.sort_values(by="timestamp", ascending=True)
 df.to_csv(file_path, index=False)
