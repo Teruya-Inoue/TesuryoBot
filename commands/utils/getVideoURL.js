@@ -31,6 +31,7 @@ module.exports = {
         .setDescription("Default:True;Trueなら自分だけ,falseならみんなに")
     ),
   async execute(interaction) {
+    await interaction.deferReply({ ephemeral: true });
     const roles = interaction.member.roles.cache;
     const hasRole = roles.some((role) => role.name === "member");
     if (!hasRole) {
@@ -41,6 +42,6 @@ module.exports = {
       return;
     }
     const content = "作成中";
-    await interaction.reply({ content: content, ephemeral: true });
+    await interaction.editReply({ content: content, ephemeral: true });
   },
 };
