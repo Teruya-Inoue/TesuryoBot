@@ -5,7 +5,7 @@ module.exports = {
     // コマンドの名前
     .setName("clubvideo")
     // コマンドの説明文
-    .setDescription("クラブ配信のプレイリストのURLを表示します")
+    .setDescription("クラブ配信のURLを表示します")
     .addIntegerOption((option) =>
       option
         .setName("year")
@@ -20,7 +20,7 @@ module.exports = {
         .setName("month")
         .setDescription("月")
         .setMinValue(1)
-        .setMaxValue(31)
+        .setMaxValue(12)
     )
     .addIntegerOption((option) =>
       option.setName("day").setDescription("日").setMinValue(1).setMaxValue(31)
@@ -28,7 +28,7 @@ module.exports = {
     .addBooleanOption((option) =>
       option
         .setName("ephmeral")
-        .setDescription("Default:True;Trueなら自分だけ,falseならみんなに")
+        .setDescription("Default:True;Trueなら自分だけ,Falseならみんなに表示")
     ),
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });

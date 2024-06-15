@@ -1,9 +1,9 @@
 from PIL import Image, ImageDraw, ImageFont
 
 test_players = {
-    "ST":"ぐり",
+    "ST":"りんりん",
     "LF":"たかおみ",
-    "RF":"りんりん",
+    "RF":"ぐり",
     "LCM":"だひょん",
     "CM":"たいが",
     "RCM":"しーあーる",
@@ -14,10 +14,11 @@ test_players = {
     "GK":"ソノ",
 }
 test_opponents = [
-    {"clubname":"Ra VIRDY","goals":3,"opponentsgoals":3},
-    {"clubname":"Aplastar CF","goals":0,"opponentsgoals":0},
-    {"clubname":"Le Fort FC","goals":1,"opponentsgoals":0},
-    {"clubname":"WELLDONE","goals":1,"opponentsgoals":1},
+    {"clubname":"ESTELA","goals":3,"opponentsgoals":0},
+    {"clubname":"Bana11","goals":0,"opponentsgoals":2},
+    {"clubname":"Bana11","goals":1,"opponentsgoals":2},
+    {"clubname":"Bana11","goals":3,"opponentsgoals":2},
+    {"clubname":"Bana11","goals":1,"opponentsgoals":3},
 ]
 positions_4321 = {
     "ST":(957, 185),
@@ -77,4 +78,4 @@ def make_thumbnail(
     # 画像を保存
     image.save(output_image_path)
 
-make_thumbnail(title="2024/06/07 (Fri)",players=test_players,opponents=test_opponents)
+make_thumbnail(title="2024/06/12 (Tue)",players=test_players,opponents=test_opponents)

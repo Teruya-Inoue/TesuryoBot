@@ -1,13 +1,13 @@
 from PIL import Image, ImageDraw, ImageFont
 
 test_players = {
-    "ST":"ぐり",
+    "ST":"りんりん",
     "LF":"たかおみ",
-    "RF":"りんりん",
+    "RF":"ぐり",
     "LCM":"だひょん",
     "CM":"たいが",
     "RCM":"しーあーる",
-    "LB":"べや",
+    "LB":"ヤヤ",
     "LCB":"あゆれ",
     "RCB":"くわがた",
     "RB":"にし",
@@ -30,7 +30,7 @@ positions_4321 = {
 # 画像の読み込み
 def make_thumbnail_es(
         players = {},
-        emblem_path = "db/emblem/Le Fort FC.png",
+        emblem_path = "db/emblem/FC Onions.png",
         image_path = "db/es_template.png",  # 画像のパスを指定してください
         output_image_path = "db/output_image_es.jpg"  # 出力画像のパスを指定してください
 ):
