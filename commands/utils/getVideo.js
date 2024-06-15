@@ -34,7 +34,11 @@ module.exports = {
 
   async execute(interaction) {
     //遅延処理
-    await interaction.deferReply({ ephemeral: true });
+    let ephemeralBool = interaction.options.getBoolean("invisible");
+    if (ephemeralBool == null) {
+      ephemeralBool = true;
+    }
+    await interaction.deferReply({ ephemeral: ephemeralBool });
     const pythonScriptPath = "py/getVideo.py";
     //メンバー以外には実行させない
     const roles = interaction.member.roles.cache;
@@ -44,16 +48,12 @@ module.exports = {
     if (!hasRole) {
       await interaction.editReply({
         content: "このコマンドを使用するにはmemberロールが必要です。",
-        ephemeral: true,
+        ephemeral: ephemeralBool,
       });
       return;
     }
 
     // 見えるか見えないか
-    let ephemeralBool = interaction.options.getBoolean("invisible");
-    if (ephemeralBool == null) {
-      ephemeralBool = true;
-    }
 
     const year = interaction.options.getInteger("year");
     const month = interaction.options.getInteger("month");
@@ -71,7 +71,7 @@ module.exports = {
         if (isNaN(specifiedDate.getTime())) {
           await interaction.editReply({
             content: "指定した日付が不正です",
-            ephemeral: true,
+            ephemeral: ephemeralBool,
           });
           return;
         }
@@ -108,7 +108,7 @@ module.exports = {
       } else {
         await interaction.editReply({
           content: "日付を指定するなら年・月・日すべてを指定してください",
-          ephemeral: true,
+          ephemeral: ephemeralBool,
         });
         return;
       }
