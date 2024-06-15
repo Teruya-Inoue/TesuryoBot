@@ -27,25 +27,26 @@ module.exports = {
       option.setName("day").setDescription("日").setMinValue(1).setMaxValue(31)
     )
     .addBooleanOption((option) =>
-      option
-        .setName("invisible")
-        .setDescription("Default:True;Trueなら自分だけ,Falseならみんなに表示")
+      option.setName("invisible").setDescription("設定しなくてOK")
     ),
 
   async execute(interaction) {
+    const roles = interaction.member.roles.cache;
+    const hasCommanderRole = roles.some((role) => role.name === "commander");
     //遅延処理
     let ephemeralBool = interaction.options.getBoolean("invisible");
     if (ephemeralBool == null) {
+      ephemeralBool = true;
+    } else if (!hasCommanderRole) {
       ephemeralBool = true;
     }
     await interaction.deferReply({ ephemeral: ephemeralBool });
     const pythonScriptPath = "py/getVideo.py";
     //メンバー以外には実行させない
-    const roles = interaction.member.roles.cache;
-    const hasRole = roles.some(
+    const hasMemberRole = roles.some(
       (role) => role.name === "member" || role.name === "サポメン"
     );
-    if (!hasRole) {
+    if (!hasMemberRole) {
       await interaction.editReply({
         content: "このコマンドを使用するにはmemberロールが必要です。",
         ephemeral: ephemeralBool,
