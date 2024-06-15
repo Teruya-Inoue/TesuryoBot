@@ -73,8 +73,6 @@ module.exports = {
       return;
     }
 
-    // 見えるか見えないか
-
     const year = interaction.options.getInteger("year");
     const month = interaction.options.getInteger("month");
     const day = interaction.options.getInteger("day");
