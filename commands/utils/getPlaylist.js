@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     // コマンドの名前
-    .setName("clubplaylists")
+    .setName("getplaylists")
     // コマンドの説明文
     .setDescription("クラブ配信のプレイリストのURLを表示します"),
   async execute(interaction) {

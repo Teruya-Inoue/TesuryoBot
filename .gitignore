@@ -106,10 +106,6 @@ dist
 
 package-lock.json
 bottest.js
-test.js
-member.json
-scheduleConfig.json
-4222.json
 .gitignore
 deploy-commands.js
-sctest.js
+delete-commands.js

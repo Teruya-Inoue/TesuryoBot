@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     // コマンドの名前
-    .setName("clubvideo")
+    .setName("getvideo")
     // コマンドの説明文
     .setDescription("クラブ配信のURLを表示します")
     .addIntegerOption((option) =>

@@ -2,6 +2,9 @@ import json
 import datetime
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+import io, sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 #プレイリスト
 playlistId_all = 'PLnJ5NkymnT04jtlp8W5LnTjeElu7pHbWk'
@@ -106,7 +109,8 @@ for v in videos:
                         break
 
 for streamer in video_dict.keys():
-    print(streamer)
+    if len(video_dict[streamer])>0:
+        print(streamer)
     for i in range(len(video_dict[streamer])):
         index = i+1
         d = video_dict[streamer][i]
@@ -117,7 +121,7 @@ for streamer in video_dict.keys():
 
         new_title = "{} {}視点".format(video_datetime.strftime("%Y/%m/%d"),streamer)
         if(index>1): 
-            new_title += str(index)
+            new_title += " Part {}".format(index)
         
         print("{}:https://www.youtube.com/watch?v={}".format(index,video_id))
         if title != new_title:
