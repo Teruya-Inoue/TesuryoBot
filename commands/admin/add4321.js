@@ -61,7 +61,7 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("rf")
-        .setDescription("LFのメンバー")
+        .setDescription("RFのメンバー")
         .addChoices(
           { name: "あゆれ", value: "あゆれ" },
           { name: "くわがた", value: "くわがた" },
