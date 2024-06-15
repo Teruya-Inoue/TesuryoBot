@@ -35,11 +35,11 @@ positions_4321 = {
 
 # 画像の読み込み
 def make_thumbnail(
-        title,
+        title : str,
+        image_path: str,  # 画像のパスを指定してください
+        output_image_path : str,  # 出力画像のパスを指定してください
         players = {},
         opponents = [],
-        image_path = "db/thumbnail_template.png",  # 画像のパスを指定してください
-        output_image_path = "db/output_image.jpg"  # 出力画像のパスを指定してください
 ):
     image = Image.open(image_path)
     draw = ImageDraw.Draw(image)
@@ -78,4 +78,8 @@ def make_thumbnail(
     # 画像を保存
     image.save(output_image_path)
 
-make_thumbnail(title="2024/06/12 (Tue)",players=test_players,opponents=test_opponents)
+make_thumbnail(title="2024/06/12 (Tue)",
+               players=test_players,
+               opponents=test_opponents,
+               image_path="db/thumbnails/thumbnail_template.png",
+               output_image_path="db/thumbnails/output_image.jpg")

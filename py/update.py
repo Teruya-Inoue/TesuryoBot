@@ -6,6 +6,9 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from make_thumbnail import make_thumbnail
+import io, sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 # UTC現在時刻の取得
 current_datetime = datetime.datetime.now(datetime.timezone.utc)
@@ -37,9 +40,9 @@ while request:
     request = youtube.playlistItems().list_next(request, response)
 
 video_dict ={
-    "sono":[],
-    "nishi":[],
-    "ayure":[]
+    "ソノ":[],
+    "にし":[],
+    "あゆれ":[]
 }
 
 for v in videos:
@@ -65,7 +68,7 @@ for v in videos:
 
         #ソノ
         if ("手数料活動" in title or "ソノ" in title) and ("e" not in title):
-            streamer = "sono"
+            streamer = "ソノ"
             if len(video_dict[streamer]) == 0:
                 video_dict[streamer].append({"videoId":video_id,"title":title,"datetime":video_datetime})
             else:
@@ -76,7 +79,7 @@ for v in videos:
 
         #にし
         elif ("にし" in title) and ("e" not in title):
-            streamer = "nishi"
+            streamer = "にし"
             if len(video_dict[streamer]) == 0:
                 video_dict[streamer].append({"videoId":video_id,"title":title,"datetime":video_datetime})
             else:
@@ -87,7 +90,7 @@ for v in videos:
         
         #あゆれ
         elif ("FC24" in title or "あゆれ" in title) and ("e" not in title):
-            streamer = "ayure"
+            streamer = "あゆれ"
             if len(video_dict[streamer]) == 0:
                 video_dict[streamer].append({"videoId":video_id,"title":title,"datetime":video_datetime})
             else:
@@ -142,7 +145,7 @@ for streamer in video_dict.keys():
             
             result_thumbnail.append({"clubname":clubname,"goals":goals,"opponentsgoals":opgoals})
             if i ==0:
-                description += "00:00 " + clubname + "\n"
+                description += "00:00 {} {}-{}\n".format(clubname,goals,opgoals)
             if i>0:
                 timestamp = matchdata.iloc[i-1,3]
                 difference = timestamp - video_timestamp + 60
@@ -157,12 +160,12 @@ for streamer in video_dict.keys():
                     players=players,
                     opponents=result_thumbnail,
                     image_path="db/thumbnails/thumbnail_template.png",
-                    output_image_path=thumbnail_path)
+                    output_image_path="db/thumbnails/output_image.jpg")
         
         # サムネイル画像をアップロード
         request = youtube.thumbnails().set(
             videoId=video_id,
-            media_body=MediaFileUpload(thumbnail_path)
+            media_body=MediaFileUpload("db/thumbnails/output_image.jpg")
         )
         response = request.execute()
 
