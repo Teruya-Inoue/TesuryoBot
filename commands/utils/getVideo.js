@@ -39,19 +39,26 @@ module.exports = {
       option.setName("day").setDescription("日").setMinValue(1).setMaxValue(31)
     )
     .addBooleanOption((option) =>
-      option.setName("invisible").setDescription("設定しなくてOK")
+      option.setName("visible").setDescription("設定しなくてOK")
     ),
 
   async execute(interaction) {
+    //個別かeveryoneか
     const roles = interaction.member.roles.cache;
     const hasCommanderRole = roles.some((role) => role.name === "commander");
-    //遅延処理
-    let ephemeralBool = interaction.options.getBoolean("invisible");
-    if (ephemeralBool == null) {
+    const visible = interaction.options.getBoolean("visible");
+    let ephemeralBool;
+    if (visible == null) {
       ephemeralBool = true;
     } else if (!hasCommanderRole) {
       ephemeralBool = true;
+    } else if (visible == true) {
+      ephemeralBool == false;
+    } else if (visible == false) {
+      ephemeralBool == true;
     }
+
+    //遅延処理
     await interaction.deferReply({ ephemeral: ephemeralBool });
     const pythonScriptPath = "py/getVideo.py";
     //メンバー以外には実行させない
