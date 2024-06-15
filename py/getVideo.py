@@ -11,7 +11,7 @@ arguments = sys.argv
 
 # 最初の引数はスクリプトのファイル名なので、それ以降の引数を処理する
 if len(arguments) == 2:
-    current_datetime = datetime.datetime.fromtimestamp(arguments[2],tz=datetime.timezone.utc)
+    current_datetime = datetime.datetime.fromtimestamp(arguments[1],tz=datetime.timezone.utc)
 else:
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
 
