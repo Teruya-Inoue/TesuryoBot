@@ -62,7 +62,7 @@ for v in videos:
 
     # 今日の動画
     # 13時~16時以内(日本時間22時~25時以内)で現在時刻と23時間未満差ならば今日の動画
-    if 13<= video_datetime.hour <= 16 and time_diff < datetime.timedelta(hours=20):
+    if 13<= video_datetime.hour <= 16 and (video_datetime.year==current_datetime.year) and (video_datetime.month==current_datetime.month) and (video_datetime.day==current_datetime.day):
         video_id = v["snippet"]["resourceId"]["videoId"]
 
         video_response = youtube.videos().list(
