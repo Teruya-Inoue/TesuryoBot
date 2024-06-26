@@ -331,7 +331,7 @@ module.exports = {
           }
         );
         await interaction.editReply({
-          content: "",
+          content: JSON.stringify(jsonData, null, 2),
           ephemeral: true,
         });
       });
