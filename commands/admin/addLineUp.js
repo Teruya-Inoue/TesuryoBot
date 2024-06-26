@@ -279,7 +279,7 @@ module.exports = {
     ),
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
-    await interaction.reply({ ephemeral: true });
+    await interaction.deferReply({ ephemeral: true });
 
     if (subcommand === "4321") {
       const st = interaction.options.getString("st");
