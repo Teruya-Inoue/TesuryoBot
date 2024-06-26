@@ -281,7 +281,7 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
     await interaction.reply({ ephemeral: true });
 
-    if (subcommand == "4321") {
+    if (subcommand === "4321") {
       const st = interaction.options.getString("st");
       const lf = interaction.options.getString("lf");
       const rf = interaction.options.getString("rf");
@@ -331,7 +331,7 @@ module.exports = {
           }
         );
         await interaction.editReply({
-          content: JSON.stringify(jsonData, null, 2),
+          content: "",
           ephemeral: true,
         });
       });
