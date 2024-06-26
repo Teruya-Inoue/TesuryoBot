@@ -4,7 +4,7 @@ test_players = {
     "ST":"りんりん",
     "LF":"たかおみ",
     "RF":"ぐり",
-    "LCM":"だひょん",
+    "LCM":"ヤヤ",
     "CM":"たいが",
     "RCM":"しーあーる",
     "LB":"べや",
@@ -14,11 +14,10 @@ test_players = {
     "GK":"ソノ",
 }
 test_opponents = [
-    {"clubname":"ESTELA","goals":3,"opponentsgoals":0},
+    {"clubname":"EL Marverick","goals":1,"opponentsgoals":0},
     {"clubname":"Bana11","goals":0,"opponentsgoals":2},
     {"clubname":"Bana11","goals":1,"opponentsgoals":2},
-    {"clubname":"Bana11","goals":3,"opponentsgoals":2},
-    {"clubname":"Bana11","goals":1,"opponentsgoals":3},
+    {"clubname":"Bana11","goals":3,"opponentsgoals":3},
 ]
 positions_4321 = {
     "ST":(957, 185),
@@ -78,7 +77,7 @@ def make_thumbnail(
     # 画像を保存
     image.save(output_image_path)
 
-make_thumbnail(title="2024/06/12 (Tue)",
+make_thumbnail(title="2024/06/24 (Mon)",
                players=test_players,
                opponents=test_opponents,
                image_path="db/thumbnails/thumbnail_template.png",

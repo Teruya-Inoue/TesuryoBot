@@ -116,6 +116,31 @@ for streamer in video_dict.keys():
         thumbnail_title = video_datetime.strftime("%Y/%m/%d (%a)")
         new_title = "{} {}視点".format(video_datetime.strftime("%Y/%m/%d"),streamer)
 
+        request = youtube.videos().list(
+        part="status",
+        id=video_id
+        )
+        response = request.execute()
+
+        status = response['items'][0]['status']
+        privacy_status = status['privacyStatus']
+
+        if privacy_status == "public":
+            print(f"Video {video_id} is public. Changing to unlisted.")
+            update_request = youtube.videos().update(
+                part="status",
+                body={
+                    "id": video_id,
+                    "status": {
+                        "privacyStatus": "unlisted"
+                    }
+                }
+            )
+            update_request.execute()
+            print(f"Video {video_id} privacy status updated to unlisted.")
+        else:
+            print(f"Video {video_id} is already {privacy_status}.")
+
         # 動画の長さを取得 
         # ISO 8601期間形式の解析
         request = youtube.videos().list(
@@ -126,7 +151,7 @@ for streamer in video_dict.keys():
         duration = response['items'][0]['contentDetails']['duration']
         duration_seconds = isodate.parse_duration(duration).total_seconds()
 
-        video_length = video_timestamp + duration_seconds
+        video_length = video_timestamp + duration_seconds + 300
         
         if(index>1): 
             new_title += " Part {}".format(index)

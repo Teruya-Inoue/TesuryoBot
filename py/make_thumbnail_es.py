@@ -4,10 +4,10 @@ test_players = {
     "ST":"りんりん",
     "LF":"たかおみ",
     "RF":"ぐり",
-    "LCM":"だひょん",
+    "LCM":"ヤヤ",
     "CM":"たいが",
     "RCM":"しーあーる",
-    "LB":"ヤヤ",
+    "LB":"べや",
     "LCB":"あゆれ",
     "RCB":"くわがた",
     "RB":"にし",
@@ -30,9 +30,9 @@ positions_4321 = {
 # 画像の読み込み
 def make_thumbnail_es(
         players = {},
-        emblem_path = "db/emblem/FC Onions.png",
-        image_path = "db/es_template.png",  # 画像のパスを指定してください
-        output_image_path = "db/output_image_es.jpg"  # 出力画像のパスを指定してください
+        emblem_path = "db/emblem/Never Say Never.png",
+        image_path = "db/thumbnails/es_template.png",  # 画像のパスを指定してください
+        output_image_path = "db/thumbnails/output_image_es.jpg"  # 出力画像のパスを指定してください
 ):
     image = Image.open(image_path)
     draw = ImageDraw.Draw(image)
