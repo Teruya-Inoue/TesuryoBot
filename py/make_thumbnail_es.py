@@ -1,13 +1,13 @@
 from PIL import Image, ImageDraw, ImageFont
 
 test_players = {
-    "ST":"りんりん",
+    "ST":"ぐり",
     "LF":"たかおみ",
-    "RF":"ぐり",
-    "LCM":"ヤヤ",
+    "RF":"りんりん",
+    "LCM":"だひょん",
     "CM":"たいが",
     "RCM":"しーあーる",
-    "LB":"べや",
+    "LB":"ヤヤ",
     "LCB":"あゆれ",
     "RCB":"くわがた",
     "RB":"にし",
@@ -30,7 +30,7 @@ positions_4321 = {
 # 画像の読み込み
 def make_thumbnail_es(
         players = {},
-        emblem_path = "db/emblem/Never Say Never.png",
+        emblem_path = "db/emblem/Aplastar CF.png",
         image_path = "db/thumbnails/es_template.png",  # 画像のパスを指定してください
         output_image_path = "db/thumbnails/output_image_es.jpg"  # 出力画像のパスを指定してください
 ):
