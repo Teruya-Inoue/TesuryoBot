@@ -177,11 +177,22 @@ module.exports = {
             .setMinValue(0)
             .setMaxValue(59)
         )
+        .addStringOption((option) =>
+          option
+            .setName("endtype")
+            .setDescription("試合の時間")
+            .addChoices(
+              { name: "前半", value: "前半" },
+              { name: "後半", value: "後半" },
+              { name: "延長", value: "延長" }
+            )
+        )
     ),
 
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
     const name = interaction.options.getString("name");
+    const endtype = interaction.options.getString("endtype");
     const goals = interaction.options.getInteger("goals");
     const opponentsgoals = interaction.options.getInteger("opponentsgoals");
 
@@ -200,16 +211,26 @@ module.exports = {
     ) {
       const date = new Date(year, month - 1, day, h, m);
 
-      // タイムゾーンオフセット（日本標準時はUTC+9時間）をミリ秒に変換します。
-      const jstOffset = 9 * 60 * 60 * 1000;
-
       // UNIXタイムスタンプ（ミリ秒）からタイムゾーンオフセットを引いてUTCに変換します。
       const unixTimestampInMilliseconds = date.getTime();
 
       // UNIXタイムスタンプを秒単位で返します。
-      unixTimestamp = Math.floor(unixTimestampInMilliseconds / 1000);
+      if (endtype == null || endtype == "後半") {
+        unixTimestamp = Math.floor(unixTimestampInMilliseconds / 1000) - 1020;
+      } else if (endtype == "前半") {
+        unixTimestamp = Math.floor(unixTimestampInMilliseconds / 1000) - 510;
+      } else if (endtype == "延長") {
+        unixTimestamp = Math.floor(unixTimestampInMilliseconds / 1000) - 1500;
+      }
     } else {
-      unixTimestamp = Math.floor(Date.now() / 1000);
+      // UNIXタイムスタンプを秒単位で返します。
+      if (endtype == null || endtype == "後半") {
+        unixTimestamp = Math.floor(Date.now() / 1000) - 1020;
+      } else if (endtype == "前半") {
+        unixTimestamp = Math.floor(Date.now() / 1000) - 510;
+      } else if (endtype == "延長") {
+        unixTimestamp = Math.floor(Date.now() / 1000) - 1500;
+      }
     }
 
     const filePath = "db/matchdata.csv";
