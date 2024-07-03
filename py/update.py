@@ -151,7 +151,7 @@ for streamer in video_dict.keys():
         duration = response['items'][0]['contentDetails']['duration']
         duration_seconds = isodate.parse_duration(duration).total_seconds()
 
-        video_length = video_timestamp + duration_seconds + 300
+        video_length = video_timestamp + duration_seconds
         
         if(index>1): 
             new_title += " Part {}".format(index)
@@ -160,7 +160,7 @@ for streamer in video_dict.keys():
 
         #サムネイルの結果と概要欄
         matchdata = pd.read_csv("db/matchdata.csv")
-        matchdata = matchdata[(matchdata["timestamp"]>video_timestamp) & (matchdata["timestamp"]<=video_length)]
+        matchdata = matchdata[(video_timestamp-60<=matchdata["timestamp"]) & (matchdata["timestamp"]<=video_length)]
         result_thumbnail = []
         description = ""
         for i in range(len(matchdata)):
@@ -172,8 +172,8 @@ for streamer in video_dict.keys():
             if i ==0:
                 description += "00:00 {} {}-{}\n".format(clubname,goals,opgoals)
             if i>0:
-                timestamp = matchdata.iloc[i-1,3]
-                difference = timestamp - video_timestamp + 60
+                timestamp = matchdata.iloc[i,3]
+                difference = timestamp - video_timestamp
                 # 差を時分秒に変換
                 delta = datetime.timedelta(seconds=difference)
                 hours, remainder = divmod(delta.seconds, 3600)
