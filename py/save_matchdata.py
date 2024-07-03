@@ -48,6 +48,6 @@ df = pd.concat([df,new_df],ignore_index=True)
 df.drop_duplicates(inplace=True,ignore_index=True)
 # Unixタイム形式のデータをdatetime形式に変換
 df['timestamp'] = pd.to_numeric(df['timestamp'])
-
 df = df.sort_values(by="timestamp", ascending=True)
+
 df.to_csv(file_path, index=False)
