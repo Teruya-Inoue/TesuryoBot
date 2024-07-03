@@ -98,6 +98,16 @@ module.exports = {
             .setMinValue(0)
             .setMaxValue(59)
         )
+        .addStringOption((option) =>
+          option
+            .setName("endtype")
+            .setDescription("試合の時間")
+            .addChoices(
+              { name: "前半", value: "前半" },
+              { name: "後半", value: "後半" },
+              { name: "延長", value: "延長" }
+            )
+        )
     )
     //esチーム
     .addSubcommand((subcommand) =>
