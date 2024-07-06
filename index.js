@@ -80,6 +80,7 @@ for (let pathname of ["commands/utils", "commands/admin"]) {
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Botの準備が完了しました");
+  console.log(await getAttendanceRecord());
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -214,6 +215,7 @@ async function getAttendanceRecord(y_b = 1999, m_b = 1, d_b = 1) {
       let day = msg.createdAt.getDay();
 
       let Attendees = msg.content
+        .replace(/\(.*?\)/g, "")
         .split("\n")
         .pop()
         .split("```")[1]
