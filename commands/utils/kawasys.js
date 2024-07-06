@@ -319,7 +319,7 @@ module.exports = {
       }
       const newData =
         data +
-        `${userId},${st},${lf},${rf},${lcm},${cm},${rcm},${lb},${lcb},${rcb},${rb},${gk}\n`;
+        `${userId},${st},${lf},${rf},${lcm},${cm},${rcm},${lb},${lcb},${rcb},${rb},${gk},${yobo}\n`;
       // ファイルに書き込む
       fs.writeFile(filePath, newData, "utf8", (err) => {
         if (err) {
