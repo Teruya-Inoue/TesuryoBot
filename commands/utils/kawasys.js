@@ -270,6 +270,13 @@ module.exports = {
           { name: "誰でも", value: "誰でも" }
         )
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("yobo")
+        .setDescription(
+          "要望欄。試したい配置とかあれば。ない場合は書かなくてOK"
+        )
     ),
   async execute(interaction) {
     // Pong!と返信
@@ -299,8 +306,9 @@ module.exports = {
     const rcb = interaction.options.getString("rcb");
     const rb = interaction.options.getString("rb");
     const gk = interaction.options.getString("gk");
+    const yobo = interaction.options.getString("yobo");
 
-    data = `${userId},${st},${lf},${rf},${lcm},${cm},${rcm},${lb},${lcb},${rcb},${rb},${gk}\n`;
+    data = `${userId},${st},${lf},${rf},${lcm},${cm},${rcm},${lb},${lcb},${rcb},${rb},${gk},${yobo}\n`;
 
     const filePath = "db/kawasys.csv";
 
@@ -324,7 +332,7 @@ module.exports = {
     });
 
     await interaction.editReply({
-      content: `あなたの投票内容\nST:${st}\nLF:${lf}\nRF:${rf}\nLCM:${lcm}\nCM:${cm}\nRCM:${rcm}\nLB:${lb}\nLCB:${lcb}\nRCB:${rcb}\nRB:${rb}\nGK:${gk}\n`,
+      content: `あなたの投票内容\nST:${st}\nLF:${lf}\nRF:${rf}\nLCM:${lcm}\nCM:${cm}\nRCM:${rcm}\nLB:${lb}\nLCB:${lcb}\nRCB:${rcb}\nRB:${rb}\nGK:${gk}\n要望:${yobo}\n`,
       ephemeral: true,
     });
   },
