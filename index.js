@@ -109,8 +109,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-/*
-//cron:試合情報取得
+
 cron.schedule(config.GetMatchInfoTime, async () => {
   const apiService = new EAFCApiService();
   const leagueMatch = await apiService.matchesStats({
@@ -142,7 +141,55 @@ cron.schedule(config.GetMatchInfoTime, async () => {
     console.log(`save_matchdata.pyが終了しました。終了コード: ${code}`);
   });
 });
-*/
+
+cron.schedule("30 0 * * 2-6",async () =>{
+  let log = ["今日の動画"];
+    const pythonScriptPath = "py/update.py";
+
+    // Pythonプロセスを生成
+    const pythonProcess = spawn("python", [pythonScriptPath]);
+
+    // 標準出力を受け取る
+    pythonProcess.stdout.on("data", (data) => {
+      console.log(`stdout: ${data}`);
+      log.push(data);
+    });
+
+    // 標準エラー出力のデータを受信するイベントハンドラ
+    pythonProcess.stderr.on("data", (data) => {
+      console.error(`update.pyからのエラー出力: ${data}`);
+    });
+
+    // Pythonプロセスの終了を待機
+    pythonProcess.on("close", async (code) => {
+      console.log(`update.pyが終了しました。終了コード`);
+    });
+})
+
+cron.schedule("0 23 * * 1-5",async () =>{
+  let log = ["今日の動画"];
+  const pythonScriptPath = "py/addPlaylist.py";
+
+    // Pythonプロセスを生成
+    const pythonProcess = spawn("python", [pythonScriptPath]);
+
+    // 標準出力を受け取る
+    pythonProcess.stdout.on("data", (data) => {
+      console.log(`stdout: ${data}`);
+      log.push(data);
+    });
+
+    // 標準エラー出力のデータを受信するイベントハンドラ
+    pythonProcess.stderr.on("data", (data) => {
+      console.error(`addPlaylist.pyからのエラー出力: ${data}`);
+    });
+
+    // Pythonプロセスの終了を待機
+    pythonProcess.on("close", async (code) => {
+      console.log(`addPlaylist.pyが正常終了`);
+    });
+})
+
 
 async function fetchMany(channel, options = { limit: 50 }) {
   if ((options.limit ?? 50) <= 100) {
