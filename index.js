@@ -241,4 +241,4 @@ async function getAttendanceRecord(y_b = 1999, m_b = 1, d_b = 1) {
   return `${header}\n${data.join("\n")}`;
 }
 
-client.login("OTkxNTkwMTE3MDM2ODA2MjM0.GWED8y.-EU8b6uTzjTdxh6SU4BYtk36w2mN20o6VxJCdI");
+client.login(process.env.DISCORD_BOT_TOKEN);
