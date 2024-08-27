@@ -80,7 +80,7 @@ for (let pathname of ["commands/utils", "commands/admin"]) {
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Botの準備が完了しました");
-  console.log(await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:10}));
+  
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
