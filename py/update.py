@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from make_thumbnail import make_thumbnail
 import io, sys
+days_of_week = ["月", "火", "水", "木", "金", "土", "日"]
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
@@ -113,7 +114,7 @@ for streamer in video_dict.keys():
         title = d["title"]
         video_datetime = d["datetime"]
         video_timestamp = video_datetime.timestamp() #UNIXタイムスタンプ
-        thumbnail_title = video_datetime.strftime("%Y/%m/%d (%a)")
+        thumbnail_title = "{} ({})".format(video_datetime.strftime("%Y/%m/%d"),days_of_week[video_datetime.weekday()])
         new_title = "{} {}視点".format(video_datetime.strftime("%Y/%m/%d"),streamer)
 
         request = youtube.videos().list(

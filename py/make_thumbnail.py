@@ -63,7 +63,7 @@ def make_thumbnail(
 
     # 対戦チーム書き込み
     start_position = (68, 203)
-    team_font_size = 45
+    team_font_size = 50
     team_font= ImageFont.truetype("arial.ttf",team_font_size)
 
     for i in range(len(opponents)):

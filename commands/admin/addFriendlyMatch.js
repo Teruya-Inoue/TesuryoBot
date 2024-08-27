@@ -23,10 +23,10 @@ module.exports = {
               { name: "FC Onions", value: "FC Onions" },
               { name: "Le Fort FC", value: "Le Fort FC" },
               { name: "MK BOMB", value: "MK BOMB" },
-              { name: "Never Say Never", value: "Never Say Never" },
+              { name: "HANNARI FC", value: "HANNARI FC" },
               { name: "Ra VIRDY", value: "Ra VIRDY" },
-              { name: "SEED JAPAN Plus", value: "SEED JAPAN Plus" },
-              { name: "TEAM STRIKER", value: "TEAM STRIKER" },
+              { name: "SEED JAPAN", value: "SEED JAPAN" },
+              { name: "Hookar", value: "Hookar" },
               { name: "WELLDONE", value: "WELLDONE" }
             )
             .setRequired(true)
