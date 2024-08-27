@@ -16,48 +16,14 @@ module.exports = {
           option
             .setName("lf")
             .setDescription("LFのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //st
         .addStringOption((option) =>
           option
             .setName("st")
             .setDescription("STのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
 
         //rf
@@ -65,216 +31,63 @@ module.exports = {
           option
             .setName("rf")
             .setDescription("RFのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //rf
         .addStringOption((option) =>
           option
             .setName("lcm")
             .setDescription("LCMのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //cm
         .addStringOption((option) =>
           option
             .setName("cm")
             .setDescription("CMのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //rcm
         .addStringOption((option) =>
           option
             .setName("rcm")
             .setDescription("RCMのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //lb
         .addStringOption((option) =>
           option
             .setName("lb")
             .setDescription("LBのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //lcb
         .addStringOption((option) =>
           option
             .setName("lcb")
             .setDescription("LCBのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //rcb
         .addStringOption((option) =>
           option
             .setName("rcb")
             .setDescription("RCBのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //rb
         .addStringOption((option) =>
           option
             .setName("rb")
             .setDescription("RBのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
         //gk
         .addStringOption((option) =>
           option
             .setName("gk")
             .setDescription("GKのメンバー")
-            .addChoices(
-              { name: "りんりん", value: "りんりん" },
-              { name: "たかおみ", value: "たかおみ" },
-              { name: "ぽりょり", value: "ぽりょり" },
-              { name: "ぐり", value: "ぐり" },
-              { name: "だひょん", value: "だひょん" },
-              { name: "たいが", value: "たいが" },
-              { name: "しーあーる", value: "しーあーる" },
-              { name: "ヤヤ", value: "ヤヤ" },
-              { name: "あゆれ", value: "あゆれ" },
-              { name: "くわがた", value: "くわがた" },
-              { name: "にし", value: "にし" },
-              { name: "べや", value: "べや" },
-              { name: "ソノ", value: "ソノ" },
-              { name: "ゲスト", value: "ゲスト" },
-              { name: "サポメン", value: "サポメン" },
-              { name: "COM", value: "COM" }
-            )
+            .setRequired(true)
         )
     ),
   async execute(interaction) {

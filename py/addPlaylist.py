@@ -7,11 +7,10 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 #プレイリスト
-playlistId_all = 'PLnJ5NkymnT04jtlp8W5LnTjeElu7pHbWk'
-playlistId_noguest = 'PLnJ5NkymnT06vs1WoljJBNRMhHQvuPAJQ'
-playlistId_nishi = 'PLnJ5NkymnT07AScub7F8KMmGTmIpwSHYv'
-playlistId_sono = 'PLnJ5NkymnT07k4HjHqqDmtGH9N0NENgln'
-playlistId_ayure = 'PLnJ5NkymnT05x9I6gz3a0pTQi19tICKdd'
+playlistId_all = 'PLnJ5NkymnT05DQE5byiqIQrkMYGu7RFCz'
+playlistId_nishi = 'PLnJ5NkymnT07i6uMWJwN66Thk2wvOWQ_1'
+playlistId_sono = 'PLnJ5NkymnT04LfVQ3VmEN-C3beYPM-5uv'
+playlistId_ayure = 'PLnJ5NkymnT05MUtwJxWXBzgcB8QZ3cjj8'
 
 playlist_dict = {
     "ソノ":playlistId_sono,

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { spawn } = require("child_process");
+const { Console } = require("console");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -45,6 +46,8 @@ module.exports = {
   async execute(interaction) {
     //個別かeveryoneか
     const roles = interaction.member.roles.cache;
+    const name = interaction.user.username
+    console.log(name,"がgetvideoを使用しました")
     const hasCommanderRole = roles.some((role) => role.name === "commander");
     const visible = interaction.options.getBoolean("visible");
     let ephemeralBool;

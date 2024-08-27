@@ -80,6 +80,7 @@ for (let pathname of ["commands/utils", "commands/admin"]) {
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Botの準備が完了しました");
+  console.log(await client.channels.cache.get(myChannels.WeekVoteCh).messages.fetch({limit:10}));
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -108,6 +109,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+/*
 //cron:試合情報取得
 cron.schedule(config.GetMatchInfoTime, async () => {
   const apiService = new EAFCApiService();
@@ -140,6 +142,7 @@ cron.schedule(config.GetMatchInfoTime, async () => {
     console.log(`save_matchdata.pyが終了しました。終了コード: ${code}`);
   });
 });
+*/
 
 async function fetchMany(channel, options = { limit: 50 }) {
   if ((options.limit ?? 50) <= 100) {
@@ -200,7 +203,7 @@ async function getAttendanceRecord(y_b = 1999, m_b = 1, d_b = 1) {
   const date_before = new Date(y_b, m_b - 1, d_b);
   const fetchedMessages = await fetchMany(
     client.channels.cache.get(myChannels.ProClubVoteCh),
-    { limit: 500 }
+    { limit: 800 }
   );
   const header = ["year", "month", "day", "day of the week"]
     .concat(MemberNameList)
@@ -238,4 +241,4 @@ async function getAttendanceRecord(y_b = 1999, m_b = 1, d_b = 1) {
   return `${header}\n${data.join("\n")}`;
 }
 
-client.login(process.env.DISCORD_BOT_TOKEN);
+client.login("OTkxNTkwMTE3MDM2ODA2MjM0.GWED8y.-EU8b6uTzjTdxh6SU4BYtk36w2mN20o6VxJCdI");

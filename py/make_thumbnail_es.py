@@ -4,10 +4,10 @@ test_players = {
     "ST":"ぐり",
     "LF":"たかおみ",
     "RF":"りんりん",
-    "LCM":"だひょん",
-    "CM":"たいが",
-    "RCM":"しーあーる",
-    "LB":"ヤヤ",
+    "LCM":"しーあーる",
+    "CM":"だひょん",
+    "RCM":"ヤヤ",
+    "LB":"べや",
     "LCB":"あゆれ",
     "RCB":"くわがた",
     "RB":"にし",
@@ -30,7 +30,7 @@ positions_4321 = {
 # 画像の読み込み
 def make_thumbnail_es(
         players = {},
-        emblem_path = "db/emblem/Aplastar CF.png",
+        emblem_path = "db/emblem/MK BOMB.png",
         image_path = "db/thumbnails/es_template.png",  # 画像のパスを指定してください
         output_image_path = "db/thumbnails/output_image_es.jpg"  # 出力画像のパスを指定してください
 ):

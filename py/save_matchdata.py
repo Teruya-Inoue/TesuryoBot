@@ -19,9 +19,13 @@ for data in matches:
     playerData = data["players"]["136886"]
     realtimegameList = []
     for playerId in playerData.keys():
-        realtimegame = playerData[playerId]["realtimegame"]
-        realtimegameList.append(realtimegame)
-    gametime = int(pd.Series(realtimegameList).mode().item())
+        if playerId != "1004015757382":
+            realtimegame = playerData[playerId]["realtimegame"]
+            if realtimegame != 0:
+                realtimegameList.append(realtimegame)
+    gametime = 0
+    if len(realtimegameList) >0:            
+        gametime = int(pd.Series(realtimegameList).mode().item())
     if gametime > 120:
         timestampMatchEnd = data["timestamp"]
         timestampMatchStart = timestampMatchEnd - gametime
