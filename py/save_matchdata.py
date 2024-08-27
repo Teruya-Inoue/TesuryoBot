@@ -1,6 +1,7 @@
 #import requests
 import json
 import pandas as pd
+import numpy as np
 import io
 
 # CSVファイルのパス
@@ -20,12 +21,14 @@ for data in matches:
     realtimegameList = []
     for playerId in playerData.keys():
         if playerId != "1004015757382":
-            realtimegame = playerData[playerId]["realtimegame"]
-            if realtimegame != 0:
+            realtimegame = int(playerData[playerId]["realtimegame"])
+            if 0 < realtimegame & realtimegame <2500:
                 realtimegameList.append(realtimegame)
     gametime = 0
+    
     if len(realtimegameList) >0:            
-        gametime = int(pd.Series(realtimegameList).mode().item())
+        gametime = np.median(realtimegameList)
+
     if gametime > 120:
         timestampMatchEnd = data["timestamp"]
         timestampMatchStart = timestampMatchEnd - gametime
@@ -42,6 +45,7 @@ for data in matches:
             if id == myclubid:
                 goals = data["clubs"][id]["goals"]
         csv_data_array.append(template.format(clubname,goals,goals_opponent,timestampMatchStart))
+
 csv_data_array = csv_data_array[::-1]
 
 csv_data = "\n".join(csv_data_array)
