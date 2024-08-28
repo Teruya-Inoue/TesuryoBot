@@ -14,7 +14,7 @@ test_players = {
     "GK":"ソノ",
 }
 test_opponents = [
-    {"clubname":"EL Marverick","goals":1,"opponentsgoals":0},
+    {"clubname":"Never Say Never","goals":1,"opponentsgoals":0},
     {"clubname":"Bana11","goals":0,"opponentsgoals":2},
     {"clubname":"Bana11","goals":1,"opponentsgoals":2},
     {"clubname":"Bana11","goals":3,"opponentsgoals":3},
@@ -44,8 +44,8 @@ def make_thumbnail(
     draw = ImageDraw.Draw(image)
 
     # 日時のフォーマットを指定
-    date_font_size = 62
-    date_font = ImageFont.truetype("arial.ttf", date_font_size)
+    date_font_size = 70
+    date_font = ImageFont.truetype("Fonts/YuGothB.ttc", date_font_size)
     date_position = (80, 70) 
     draw.text(date_position, title, font=date_font, fill=(255, 255, 255, 255))
 
@@ -63,7 +63,7 @@ def make_thumbnail(
 
     # 対戦チーム書き込み
     start_position = (68, 203)
-    team_font_size = 50
+    team_font_size = 55
     team_font= ImageFont.truetype("arial.ttf",team_font_size)
 
     for i in range(len(opponents)):
@@ -77,7 +77,7 @@ def make_thumbnail(
     # 画像を保存
     image.save(output_image_path)
 
-make_thumbnail(title="2024/06/24 (Mon)",
+make_thumbnail(title="2024/06/24 (月)",
                players=test_players,
                opponents=test_opponents,
                image_path="db/thumbnails/thumbnail_template.png",
