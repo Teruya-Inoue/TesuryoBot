@@ -16,78 +16,66 @@ module.exports = {
           option
             .setName("lf")
             .setDescription("LFのメンバー")
-            .setRequired(true)
         )
         //st
         .addStringOption((option) =>
           option
             .setName("st")
             .setDescription("STのメンバー")
-            .setRequired(true)
         )
-
         //rf
         .addStringOption((option) =>
           option
             .setName("rf")
             .setDescription("RFのメンバー")
-            .setRequired(true)
         )
         //rf
         .addStringOption((option) =>
           option
             .setName("lcm")
             .setDescription("LCMのメンバー")
-            .setRequired(true)
         )
         //cm
         .addStringOption((option) =>
           option
             .setName("cm")
             .setDescription("CMのメンバー")
-            .setRequired(true)
         )
         //rcm
         .addStringOption((option) =>
           option
             .setName("rcm")
             .setDescription("RCMのメンバー")
-            .setRequired(true)
         )
         //lb
         .addStringOption((option) =>
           option
             .setName("lb")
             .setDescription("LBのメンバー")
-            .setRequired(true)
         )
         //lcb
         .addStringOption((option) =>
           option
             .setName("lcb")
             .setDescription("LCBのメンバー")
-            .setRequired(true)
         )
         //rcb
         .addStringOption((option) =>
           option
             .setName("rcb")
             .setDescription("RCBのメンバー")
-            .setRequired(true)
         )
         //rb
         .addStringOption((option) =>
           option
             .setName("rb")
             .setDescription("RBのメンバー")
-            .setRequired(true)
         )
         //gk
         .addStringOption((option) =>
           option
             .setName("gk")
             .setDescription("GKのメンバー")
-            .setRequired(true)
         )
     ),
   async execute(interaction) {
