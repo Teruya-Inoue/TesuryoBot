@@ -1,23 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
 
-test_players = {
-    "ST":"りんりん",
-    "LF":"たかおみ",
-    "RF":"ぐり",
-    "LCM":"ヤヤ",
-    "CM":"たいが",
-    "RCM":"しーあーる",
-    "LB":"べや",
-    "LCB":"あゆれ",
-    "RCB":"くわがた",
-    "RB":"にし",
-    "GK":"ソノ",
-}
+
 test_opponents = [
-    {"clubname":"Never Say Never","goals":1,"opponentsgoals":0},
-    {"clubname":"Bana11","goals":0,"opponentsgoals":2},
-    {"clubname":"Bana11","goals":1,"opponentsgoals":2},
-    {"clubname":"Bana11","goals":3,"opponentsgoals":3},
+    
 ]
 positions_4321 = {
     "ST":(957, 185),
@@ -76,8 +61,20 @@ def make_thumbnail(
 
     # 画像を保存
     image.save(output_image_path)
-
-make_thumbnail(title="2024/06/24 (月)",
+test_players = {
+    "ST":"ぐり",
+    "LF":"たかおみ",
+    "RF":"りんりん",
+    "LCM":"YKC",
+    "CM":"にし",
+    "RCM":"しーあーる",
+    "LB":"体験",
+    "LCB":"あゆれ",
+    "RCB":"くわがた",
+    "RB":"べや",
+    "GK":"ソノ",
+}
+make_thumbnail(title="2024/09/09 (月)",
                players=test_players,
                opponents=test_opponents,
                image_path="db/thumbnails/thumbnail_template.png",

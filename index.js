@@ -80,6 +80,17 @@ for (let pathname of ["commands/utils", "commands/admin"]) {
 // When the client is ready, run this code (only once)
 client.once("ready", async () => {
   console.log("Botの準備が完了しました");
+  const apiService = new EAFCApiService();
+  const leagueMatch = await apiService.matchesStats({
+    clubIds: "5117",
+    platform: "common-gen5",
+    matchType: "leagueMatch",
+  });
+  const playoffMatch = await apiService.matchesStats({
+    clubIds: "5117",
+    platform: "common-gen5",
+    matchType: "playoffMatch",
+  });
   
 });
 
@@ -113,12 +124,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 cron.schedule(config.GetMatchInfoTime, async () => {
   const apiService = new EAFCApiService();
   const leagueMatch = await apiService.matchesStats({
-    clubIds: "136886",
+    clubIds: "5117",
     platform: "common-gen5",
     matchType: "leagueMatch",
   });
   const playoffMatch = await apiService.matchesStats({
-    clubIds: "136886",
+    clubIds: "5117",
     platform: "common-gen5",
     matchType: "playoffMatch",
   });
