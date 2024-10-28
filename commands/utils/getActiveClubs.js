@@ -32,7 +32,7 @@ module.exports = {
     // コマンドの説明文
     .setDescription("今日活動してるクラブとそのメンバーを取得します"),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const nowTS = Math.floor(Date.now() / 1000);
     let text = "活動してるクラブ\n"
     for (const club of clublist) {
