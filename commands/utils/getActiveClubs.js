@@ -67,7 +67,7 @@ module.exports = {
             for (const playerid of Object.keys(leagueData[0]["players"][clubIds])){
                 players.push(leagueData[0]["players"][clubIds][playerid]["playername"])
             }
-            text += `**${clubname}** ${formattedDate}\n` + "```" + players.join("\n") + "```\n"
+            text += `**${clubname}** ${formattedDate}\n` + "```\n" + players.join("\n") + "```\n"
             }
         }else if(pt > lt){
             if(nowTS-pt < 3600 *9){
@@ -75,7 +75,7 @@ module.exports = {
             for (const playerid of Object.keys(playoffData[0]["players"][clubIds])){
                 players.push(playoffData[0]["players"][clubIds][playerid]["playername"])
             }
-            text += `**${clubname}** ${formattedDate}\n` + "```" + players.join("\n") + "```\n"
+            text += `**${clubname}** ${formattedDate}\n` + "```\n" + players.join("\n") + "```\n"
             }
         }
 
@@ -87,7 +87,7 @@ module.exports = {
             for (const playerid of Object.keys(leagueData[0]["players"][clubIds])){
             players.push(leagueData[0]["players"][clubIds][playerid]["playername"])
             }
-            text += `**${clubname}** ${formattedDate}\n` + "```" + players.join("\n") + "```\n"
+            text += `**${clubname}** ${formattedDate}\n` + "```\n" + players.join("\n") + "```\n"
         }
         }else if(playoffData > 0){
         pt = playoffData[0]["timestamp"]
