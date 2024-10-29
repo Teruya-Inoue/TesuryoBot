@@ -149,7 +149,7 @@ cron.schedule(config.GetMatchInfoTime, async () => {
 
   // Pythonプロセスの終了を待機
   pythonProcess.on("close", (code) => {
-    console.log(`save_matchdata.pyが終了しました。終了コード: ${code}`);
+    //console.log(`save_matchdata.pyが終了しました。終了コード: ${code}`);
   });
 });
 

@@ -16,5 +16,5 @@
   "JudgeTime": "0 20 * * *",
   "GuestManagerTime": "58 5 * * Mon",
   "WeekVoteResetTime": "59 23 * * Fri",
-  "GetMatchInfoTime": "*/3 22,23,23,0 * * 1-5"
+  "GetMatchInfoTime": "*/3 * * * 1-5"
 }
