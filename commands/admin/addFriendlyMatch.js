@@ -1,6 +1,19 @@
 const { SlashCommandBuilder } = require("discord.js");
 const fs = require("fs");
 
+function jpdate(timestamp){
+  const date = new Date(timestamp * 1000);
+  const formattedDate = date.toLocaleString("ja-JP", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+  });
+  return formattedDate
+}
+
 module.exports = {
   data: new SlashCommandBuilder()
     // コマンドの名前
@@ -64,6 +77,11 @@ module.exports = {
               { name: "8", value: 8 },
               { name: "9", value: 9 }
             )
+        )
+        .addIntegerOption((option)=>
+          option
+        .setName("m-ago")
+        .setDescription("何分前に終わったか")
         )
         .addIntegerOption((option) =>
           option
@@ -174,6 +192,11 @@ module.exports = {
               { name: "9", value: 9 }
             )
         )
+        .addIntegerOption((option)=>
+          option
+        .setName("m-ago")
+        .setDescription("何分前に終わったか")
+        )
         .addIntegerOption((option) =>
           option
             .setName("year")
@@ -246,13 +269,25 @@ module.exports = {
     const goals = interaction.options.getInteger("goals");
     const opponentsgoals = interaction.options.getInteger("opponentsgoals");
 
+    const mAgo = interaction.options.getInteger("m-ago")
     const year = interaction.options.getInteger("year");
     const month = interaction.options.getInteger("month");
     const day = interaction.options.getInteger("day");
     const h = interaction.options.getInteger("hour");
     const m = interaction.options.getInteger("minute");
     let unixTimestamp;
-    if (
+
+    if(mAgo!=null){
+      // UNIXタイムスタンプを秒単位で返します。
+      if (endtype == null || endtype == "後半") {
+        unixTimestamp = Math.floor(Date.now() / 1000) - 1020 - mAgo*60;
+      } else if (endtype == "前半") {
+        unixTimestamp = Math.floor(Date.now() / 1000) - 510 - mAgo*60;
+      } else if (endtype == "延長") {
+        unixTimestamp = Math.floor(Date.now() / 1000) - 1500 - mAgo*60;
+      }
+    }
+    else if (
       year != null &&
       month != null &&
       day != null &&
@@ -304,7 +339,7 @@ module.exports = {
     });
 
     await interaction.editReply({
-      content: `${name} ${goals}-${opponentsgoals}`,
+      content: `${name} ${goals}-${opponentsgoals} ${jpdate(unixTimestamp)}`,
       ephemeral: true,
     });
   },
