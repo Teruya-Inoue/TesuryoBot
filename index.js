@@ -135,7 +135,7 @@ cron.schedule(config.GetMatchInfoTime, async () => {
   });
   const matches = [...leagueMatch, ...playoffMatch];
   fs.writeFileSync("db/match.json", JSON.stringify(matches));
-  console.log("書き込み完了");
+  //console.log("書き込み完了");
   // Pythonスクリプトのパス
   const pythonScriptPath = "py/save_matchdata.py";
 
