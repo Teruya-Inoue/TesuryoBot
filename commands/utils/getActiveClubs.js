@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const clublist = [ {name:"Aplastar" ,id:"4370"},
+const clublist = [ {name:"Aplastar CF" ,id:"4370"},
     {name:"Bana11" ,id:"4172"},
     {name:"Diverti" ,id:"765539"},
     {name:"FC Onions" ,id:"4592"},
