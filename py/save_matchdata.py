@@ -12,12 +12,12 @@ json_path = 'db/match.json'
 with open(json_path, 'r',encoding='utf-8') as f:
     matches = json.load(f)
 
-myclubid = "136886"
+myclubid = "5117"
 csv_data_array = []
 template = """{},{},{},{}"""
 
 for data in matches:
-    playerData = data["players"]["136886"]
+    playerData = data["players"][myclubid]
     realtimegameList = []
     for playerId in playerData.keys():
         if playerId != "1004015757382":
