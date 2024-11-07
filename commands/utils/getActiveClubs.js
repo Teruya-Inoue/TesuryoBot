@@ -99,10 +99,10 @@ module.exports = {
     for (const club of clublist) {
       const clubname = club["name"]
       const clubIds = club["id"]
-      text_list.push(getClubdata(nowTS,clubname,clubIds))
+      text_list.push(getClubData(nowTS,clubname,clubIds))
     }
     const comptext = await Promise.all(text_list)
-    
+
     await interaction.editReply({
         content: comptext.join(""),
         ephemeral: true,});
