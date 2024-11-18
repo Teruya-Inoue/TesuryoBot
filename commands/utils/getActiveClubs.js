@@ -62,7 +62,7 @@ async function getClubData(nowTS,clubname,clubIds) {
             return text
           }
         }
-    }else if(leagueData > 0){
+    }else if(leagueData.length > 0){
         lt = leagueData[0]["timestamp"]
         if(nowTS-lt < 3600 *20){
           formattedDate = jpdate(lt)
@@ -72,7 +72,7 @@ async function getClubData(nowTS,clubname,clubIds) {
           const text = `**${clubname}** ${formattedDate}\n` + "```\n" + players.join("\n") + "```\n"
           return text
         }
-      }else if(playoffData > 0){
+      }else if(playoffData.length > 0){
         pt = playoffData[0]["timestamp"]
         if(nowTS-pt < 3600 *20){
           formattedDate = jpdate(pt)
